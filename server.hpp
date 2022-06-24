@@ -7,6 +7,7 @@
 #include "Config.hpp"
 
 #include <netinet/in.h>
+#include <iostream>
 
 #include <list>
 #include <algorithm>
