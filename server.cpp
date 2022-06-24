@@ -25,7 +25,6 @@ Server* Server::Start(EventSelector *sel, int port) {
     if (res == -1)
         return 0;
     return new Server(sel, ls);
-
 }
 
 void Server::Handle(bool r, bool w) {
@@ -46,6 +45,7 @@ void Server::RemoveSession(Session *s) {
     auto tomove = std::find(sessions.begin(), sessions.end(), s);
     if (tomove != sessions.end()) {
         sessions.erase(tomove);
-        write(1, "connection closed...\n", strlen("connection closed...\n"));
+        std::cout << "connection closed... fd: " << (*tomove)->GetFd() << std::endl;
+        delete *tomove;
     }
 }

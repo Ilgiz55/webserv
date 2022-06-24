@@ -11,12 +11,30 @@ void Session::Send(const char *msg) {
 }
 
 void Session::Receive() {
-	int rc = read(GetFd(), buffer, sizeof(buffer));
-	if (rc > 0)
-		write(1, buffer, rc);
-	if (rc < 1)
-		master->RemoveSession(this);
+	
+	int rc;
+	while ((rc = recv(GetFd(), buffer, sizeof(buffer), 0)) > 0) {
+		if (rc >= (int)sizeof(buffer)){
+			req.append(buffer);
+			buf_used = 0;
+		}
+		else {
+			break;
+		}
+	}
+	req.append(buffer, 0, rc);
+	
+	// master->RemoveSession(this);
 }
+
+// void Session::ReadAndIgnore() {
+// 	int rc = read(GetFd(), buffer, sizeof(buffer));
+// 	if (rc < 1) {
+// 		master->RemoveSession(this);
+// 		return;
+// 	}
+
+// }
 
 void Session::Handle(bool r, bool w) {
 	if (!r)
@@ -29,8 +47,10 @@ void Session::Handle(bool r, bool w) {
 	<html>hello from my server\n</html>";
 
 	Receive();
+	Parse(req);
+	std::cout << req << std::endl;
 	Send(answer);
-	printf("connections fd: %d\n", GetFd());
-	// master->RemoveSession(this);
+	// printf("connections fd: %d\n", GetFd());
+	master->RemoveSession(this);
 
 }

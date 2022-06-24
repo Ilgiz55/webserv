@@ -6,6 +6,7 @@
 #include "session.hpp"
 
 #include <netinet/in.h>
+#include <iostream>
 
 #include <list>
 #include <algorithm>
