@@ -4,6 +4,7 @@
 #include "fdhandler.hpp"
 #include "selector.hpp"
 #include "session.hpp"
+#include "Config.hpp"
 
 #include <netinet/in.h>
 
@@ -22,7 +23,7 @@ class Server : public FdHandler {
 
 	public:
 		~Server();
-		static Server *Start(EventSelector *sel, int port);
+		static Server *Start(EventSelector *sel, Config conf);
 		void RemoveSession(Session *s);
 };
 

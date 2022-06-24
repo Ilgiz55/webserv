@@ -6,7 +6,7 @@ Server::Server(EventSelector *sel, int fd) : FdHandler(fd, true), selector(sel) 
 
 Server::~Server() {}
 
-Server* Server::Start(EventSelector *sel, int port) {
+Server* Server::Start(EventSelector *sel, Config conf) {
     int ls, opt, res;
 
     struct sockaddr_in addr;
@@ -17,7 +17,7 @@ Server* Server::Start(EventSelector *sel, int port) {
     setsockopt(ls, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    addr.sin_port = htons(port);
+    addr.sin_port = htons(conf.getPort());
     res = bind(ls, (struct sockaddr *) &addr, sizeof(addr));
     if (res == -1)
         return 0;
