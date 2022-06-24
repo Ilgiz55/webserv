@@ -12,24 +12,12 @@ private:
 	std::string					_location;
 
 public:
-	Config();
-	Config(int _lstn, std::string s_name, std::string loc);
-	~Config();
+	Config() : _listen(8888,""), _server_name(""), _location("") {}
+	Config(std::pair<int, std::string> lstn, std::string s_name, std::string loc):
+				_listen(lstn), _server_name(s_name), _location(loc) {}
+	~Config(){}
 
 	int getPort() const { return _listen.first; }
 };
-
-Config::Config() : _listen(8888,""), _server_name(""), _location("") 
-{
-}
-
-Config::Config(int lstn, std::string s_name, std::string loc):
-				_listen(lstn,""), _server_name(s_name), _location(loc) 
-{
-}
-
-Config::~Config()
-{
-}
 
 #endif

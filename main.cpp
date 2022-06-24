@@ -6,7 +6,7 @@ static int port = 8888;
 
 int main(int agrc, char **argv) {
     EventSelector *selector = new EventSelector;
-    Config  conf;// = new Config;
+    Config *conf = new Config; ;// = new Config;
     Server *serv = Server::Start(selector, conf);
     if (!serv)
         return 1;

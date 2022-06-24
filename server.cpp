@@ -6,7 +6,7 @@ Server::Server(EventSelector *sel, int fd) : FdHandler(fd, true), selector(sel) 
 
 Server::~Server() {}
 
-Server* Server::Start(EventSelector *sel, Config conf) {
+Server* Server::Start(EventSelector *sel, Config *conf) {
     int ls, opt, res;
 
     struct sockaddr_in addr;
@@ -17,7 +17,7 @@ Server* Server::Start(EventSelector *sel, Config conf) {
     setsockopt(ls, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    addr.sin_port = htons(conf.getPort());
+    addr.sin_port = htons(conf->getPort());
     res = bind(ls, (struct sockaddr *) &addr, sizeof(addr));
     if (res == -1)
         return 0;
@@ -45,6 +45,7 @@ void Server::RemoveSession(Session *s) {
     selector->Remove(s);
     auto tomove = std::find(sessions.begin(), sessions.end(), s);
     if (tomove != sessions.end()) {
+        close();
         sessions.erase(tomove);
         write(1, "connection closed...\n", strlen("connection closed...\n"));
     }

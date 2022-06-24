@@ -23,7 +23,7 @@ class Server : public FdHandler {
 
 	public:
 		~Server();
-		static Server *Start(EventSelector *sel, Config conf);
+		static Server *Start(EventSelector *sel, Config *conf);
 		void RemoveSession(Session *s);
 };
 
