@@ -3,7 +3,7 @@
 
 static int port = 8888;
 
-int main() {
+int main(int agrc, char **argv) {
     EventSelector *selector = new EventSelector;
     Server *serv = Server::Start(selector, port);
     if (!serv)
