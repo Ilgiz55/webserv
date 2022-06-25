@@ -24,7 +24,7 @@ class Session : FdHandler {
 	~Session();
 	void Send(const char *msg);
 	void Receive();
-	void Parse(std::string &str);
+	// void Parse(std::string &str);
 	// void ReadAndIgnore();
 	// void ReadAndCheck();
 	virtual void Handle(bool r, bool w);

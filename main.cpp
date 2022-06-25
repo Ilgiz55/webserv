@@ -4,9 +4,11 @@
 
 static int port = 8888;
 
-int main(int agrc, char **argv) {
+int main(int agrc, char **argv)
+{
+    std::string config_file = "default.conf";
+    Config *conf = new Config(config_file);
     EventSelector *selector = new EventSelector;
-    Config *conf = new Config; ;// = new Config;
     Server *serv = Server::Start(selector, conf);
     if (!serv)
         return 1;

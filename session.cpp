@@ -47,7 +47,7 @@ void Session::Handle(bool r, bool w) {
 	<html>hello from my server\n</html>";
 
 	Receive();
-	Parse(req);
+	// Parse(req);
 	std::cout << req << std::endl;
 	Send(answer);
 	// printf("connections fd: %d\n", GetFd());

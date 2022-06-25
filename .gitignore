@@ -1,3 +1,5 @@
 /.vscode/
 /serv.dSYM/
+.*
+a.out
 serv
