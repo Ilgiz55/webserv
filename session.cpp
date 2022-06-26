@@ -57,21 +57,22 @@ void Session::Parse() {
 	}
 }
 
+void Session::SetResponse(){
+	response.setBody(read_file("404.html"));
+	response.setProtocol(request.getProtocol());
+	response.setStatus(" 200 OK\n");
+	response.setContentType("Content-Type: text/html; charset=utf-8\n");
+	response.setHeader();
+	std::cout << "Response Header:\n" << response.getHeaders() << std::endl;
+}
 
 void Session::Handle(bool r, bool w) {
 	if (!r)
 		return;
-	char answer[] = "\
-	HTTP/1.1 200 OK\r\n\
-	Version: HTTP/1.1\r\n\
-	Content-Type: text/html; charset=utf-8\r\n\
-	Content-Length: 88\r\n\r\n\
-	<html>hello from my server\n</html>";
-
 	Receive();
 	Parse();
-	std::cout << req << std::endl;
-	Send(answer);
+	SetResponse();
+	Send((response.getHeaders() + response.getBody()).c_str());
 	master->RemoveSession(this);
 
 }

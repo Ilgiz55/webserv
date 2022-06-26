@@ -6,11 +6,13 @@
 #include "server.hpp"
 
 #include "utils.hpp"
+#include "utils2.hpp"
 
 #include <unistd.h>
 #include <string.h>
 #include <iostream>
 #include "request.hpp"
+#include "Response.hpp"
 #include <vector>
 
 #define BUF_LEN 1024
@@ -22,6 +24,7 @@ class Session : FdHandler {
 	char buffer[BUF_LEN];
 	std::string req;
 	Request request;
+	Response response;
 	Server *master;
 
 	Session(Server *master, int fd);
@@ -29,6 +32,7 @@ class Session : FdHandler {
 	void Send(const char *msg);
 	void Receive();
 	void Parse();
+	void SetResponse();
 	virtual void Handle(bool r, bool w);
 
 };

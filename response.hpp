@@ -13,38 +13,30 @@ private:
 	std::string _body;
 
 public:
-	Response();
+	Response(){}
 
-	~Response();
+	~Response(){}
 
-	void setProtocol(const std::string& protocol);
-
-	void setStatus(const std::string& status);
-
-	void setContentType(const std::string& contentType);
-
-	void setBuffer(const std::string& buffer);
-
-	void setHeader(const std::string& header);
-
-	void setBody(const std::string& body);
-
-	const std::string& getProtocol() const;
-
-	const std::string& getStatus() const;
-
-	const std::string& getBuffer() const;
-
-	const std::string& getContentType() const;
-
-	const std::string& getHeaders() const;
-
-	const std::string& getBody() const;
+	void setProtocol(const std::string& protocol) { _protocol = protocol; }
+	void setStatus(const std::string& status) { _status = status; }
+	void setContentType(const std::string& contentType) { _contentType = contentType; }
+	void setBuffer(const std::string& buffer) { _buffer = buffer; }
+	void setHeader() { 
+		_headers = _protocol + _status + _contentType;
+		_headers = _headers + "Server: webserv\n\n";
+	}
+	void setBody(const std::string& body) { _body = body; }
+	const std::string& getProtocol() const { return _protocol; }
+	const std::string& getStatus() const { return _status; }
+	const std::string& getBuffer() const { return _buffer; }
+	const std::string& getContentType() const { return _contentType; }
+	const std::string& getHeaders() const { return _headers; }
+	const std::string& getBody() const { return _body; }
 
 private:
 	Response(const Response&);
-
 	Response& operator=(const Response&);
+    
 };
 
 #endif

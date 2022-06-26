@@ -12,7 +12,9 @@ class EventSelector {
 	bool quit_flag;
 public:
 	EventSelector() : fd_array(0), quit_flag(false) {}
+	
 	~EventSelector() {if (fd_array) delete[] fd_array;}
+	
 	void Add(FdHandler *h) {
 		int i;
 		int fd = h->GetFd();
@@ -35,6 +37,7 @@ public:
 			max_fd = fd;
 		fd_array[fd] = h;
 	}
+
 	bool Remove(FdHandler *h) {
 		int fd = h->GetFd();
 		if (fd > fd_array_len || fd_array[fd] != h)
@@ -46,7 +49,9 @@ public:
 		}
 		return true;
 	}
+
 	void BreakLoop() {quit_flag = true;}
+
 	void Run() {
 		quit_flag = false;
 		do {
