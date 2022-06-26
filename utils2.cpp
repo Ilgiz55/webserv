@@ -23,3 +23,23 @@ std::string read_file(const std::string& f_name)
 	ifs.close();
 	return result;
 }
+
+std::map<std::string, std::string> init_mime_types()
+{
+    std::map<std::string, std::string> mt;
+
+    mt.insert(std::make_pair("html","text/html"));
+    mt.insert(std::make_pair("htm","text/html"));
+    mt.insert(std::make_pair("shtml","text/html"));
+    mt.insert(std::make_pair("css","text/css"));
+    mt.insert(std::make_pair("xml","text/xml"));
+    mt.insert(std::make_pair("gif","image/gif"));
+    mt.insert(std::make_pair("jpeg","image/jpeg"));
+    mt.insert(std::make_pair("jpg","image/jpeg"));
+    mt.insert(std::make_pair("ico","image/x-icon"));
+    // mt.insert(std::make_pair("",""));
+    mt.insert(std::make_pair("application/octet-stream","bin"));
+    // mt.insert(std::make_pair("",""));
+
+    return mt;
+}

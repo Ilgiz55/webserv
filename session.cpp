@@ -6,8 +6,9 @@ Session::Session(Server *a_master, int fd) : FdHandler(fd, true), master(a_maste
 
 Session::~Session() {}
 
-void Session::Send(const char *msg) {
-	write(GetFd(), msg, strlen(msg));
+void Session::Send() {
+	std::string buffer = response.getBuffer();
+	ssize_t sendBytes = send(GetFd(), buffer.c_str(), buffer.size(),0);
 }
 
 void Session::Receive() {
@@ -58,12 +59,22 @@ void Session::Parse() {
 }
 
 void Session::SetResponse(){
-	response.setBody(read_file("404.html"));
 	response.setProtocol(request.getProtocol());
 	response.setStatus(" 200 OK\n");
-	response.setContentType("Content-Type: text/html; charset=utf-8\n");
-	response.setHeader();
-	std::cout << "Response Header:\n" << response.getHeaders() << std::endl;
+	response.setContentType(request.getUri());
+	try
+	{
+		std::string file_name = request.getUri().substr(1);
+		response.setBody(read_file(file_name));
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << e.what() << std::endl;
+		response.setBody("NOT FOUND\n");
+	}
+	response.setHeader(response.getProtocol() + response.getStatus() + response.getContentType());
+	response.setHeader("Content-Length: " + std::to_string(response.getBody().size()) + "\n\n");
+	response.setBuffer(response.getHeaders() + response.getBody());
 }
 
 void Session::Handle(bool r, bool w) {
@@ -72,7 +83,8 @@ void Session::Handle(bool r, bool w) {
 	Receive();
 	Parse();
 	SetResponse();
-	Send((response.getHeaders() + response.getBody()).c_str());
+	std::string buffer = response.getBuffer();
+	Send();
 	master->RemoveSession(this);
 
 }

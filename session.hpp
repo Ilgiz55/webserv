@@ -29,7 +29,7 @@ class Session : FdHandler {
 
 	Session(Server *master, int fd);
 	~Session();
-	void Send(const char *msg);
+	void Send();
 	void Receive();
 	void Parse();
 	void SetResponse();
