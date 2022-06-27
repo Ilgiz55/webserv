@@ -82,6 +82,7 @@ void Session::Handle(bool r, bool w) {
 		return;
 	Receive();
 	Parse();
+	std::cout << req << std::endl;
 	SetResponse();
 	std::string buffer = response.getBuffer();
 	Send();

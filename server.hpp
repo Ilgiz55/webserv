@@ -7,6 +7,7 @@
 #include "Config.hpp"
 
 #include <netinet/in.h>
+ #include <arpa/inet.h>
 #include <iostream>
 
 #include <list>
@@ -24,7 +25,7 @@ class Server : public FdHandler {
 
 	public:
 		~Server();
-		static Server *Start(EventSelector *sel, Config *conf);
+		static Server *Start(EventSelector *sel, std::pair<std::string, int>& ip_port);
 		void RemoveSession(Session *s);
 };
 
