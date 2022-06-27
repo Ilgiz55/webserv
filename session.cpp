@@ -64,7 +64,7 @@ void Session::SetResponse(){
 	response.setContentType(request.getUri());
 	try
 	{
-		std::string file_name = request.getUri().substr(1);
+		std::string file_name = request.getUri();
 		response.setBody(read_file(file_name));
 	}
 	catch(const std::exception& e)

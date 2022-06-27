@@ -6,7 +6,7 @@ static int port = 8888;
 
 int main(int agrc, char **argv)
 {
-    std::string config_file = "default.conf";
+    std::string config_file = "config_test.conf";
     Config *conf = new Config(config_file);
     EventSelector *selector = new EventSelector;
     Server *serv = Server::Start(selector, conf);

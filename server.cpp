@@ -17,7 +17,7 @@ Server* Server::Start(EventSelector *sel, Config *conf) {
     setsockopt(ls, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    addr.sin_port = htons(conf->getPort());
+    addr.sin_port = htons(conf->getConfigServer(0).getPort(0));
     res = bind(ls, (struct sockaddr *) &addr, sizeof(addr));
     if (res == -1)
         return 0;
