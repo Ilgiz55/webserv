@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 
-Session::Session(Server *a_master, int fd) : FdHandler(fd, true), master(a_master) {}
+Session::Session(ConfigServer _config, Server *a_master, int fd) : FdHandler(_config, fd, true), master(a_master)/*, config(_config)*/ {}
 
 Session::~Session() {}
 
@@ -64,7 +64,7 @@ void Session::SetResponse(){
 	response.setContentType(request.getUri());
 	try
 	{
-		std::string file_name = request.getUri();
+		std::string file_name = this->GetConfigServer().getRoot() + request.getUri();
 		response.setBody(read_file(file_name));
 	}
 	catch(const std::exception& e)
@@ -82,6 +82,7 @@ void Session::Handle(bool r, bool w) {
 		return;
 	Receive();
 	Parse();
+	std::cout << req << std::endl;
 	SetResponse();
 	std::string buffer = response.getBuffer();
 	Send();

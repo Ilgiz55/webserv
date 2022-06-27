@@ -14,6 +14,7 @@
 #include "request.hpp"
 #include "response.hpp"
 #include <vector>
+#include "ConfigServer.hpp"
 
 #define BUF_LEN 1024
 
@@ -25,9 +26,10 @@ class Session : FdHandler {
 	std::string req;
 	Request request;
 	Response response;
+	// ConfigServer config;
 	Server *master;
 
-	Session(Server *master, int fd);
+	Session(ConfigServer _config, Server *master, int fd);
 	~Session();
 	void Send();
 	void Receive();

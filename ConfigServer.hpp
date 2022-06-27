@@ -7,21 +7,22 @@
 class ConfigServer
 {
 private:
-    std::vector<std::pair<int, std::string> >	_listen;
-	std::string					                _server_name;
-	std::string					                _location;
-	std::string					                _root;
+    std::pair<std::string, int>	_listen;
+	std::string					_server_name;
+	std::string					_location;
+	std::string					_root;
 public:
     ConfigServer() {}
-    // ConfigServer() : _server_name(""), _location(""), _root("") { _listen.push_back(std::make_pair(80,"")); }
+    ConfigServer(const ConfigServer& src) : _listen(src._listen), _server_name(src._server_name), _location(src._location), _root(src._root) {}
     ~ConfigServer() {}
 
-    void setListen(std::pair<int, std::string> lstn) { _listen.push_back(lstn); }
+    void setListen(std::pair<std::string, int> lstn) { _listen = lstn; }
     void setServerName(std::string s_name) { _server_name = s_name; }
     void setLocation(std::string lctn) { _location = lctn; }
     void setRoot(std::string rt) { _root = rt; }
 
-    int getPort(int i) { return _listen[i].first; }
+    std::pair<std::string, int>& getPort() { return _listen; }
+    std::string getRoot() { return _root; }
 };
 
 #endif

@@ -32,7 +32,6 @@ public:
 			{
 				std::getline(ifs_config, str_stream);
 				_configs.push_back(ConfigServer());
-				_configs[i].setRoot("data/wwww");
 				pars_line(ifs_config, _configs[i], str_stream);
 				i++;
 			}
@@ -46,6 +45,8 @@ public:
 		return _configs[i];
 	}
 
+	std::vector<ConfigServer>& getConfigs() { return _configs; }
+
 private:
 
 	void pars_line(std::ifstream& ifs_config, ConfigServer& config_server, std::string& _line)
@@ -58,8 +59,8 @@ private:
 				if ((found = _line.find("listen")) != std::string::npos)
 					pars_listen(config_server, _line.erase(found, found + 6));
 				else if ((found = _line.find("root")) != std::string::npos)
-					pars_listen(config_server, _line.erase(found, found + 4));
-				if (std::getline(ifs_config, _line))
+					pars_root(config_server, _line.erase(found, found + 4));
+				if (!std::getline(ifs_config, _line))
 					return ;
 				found = _line.find("}");
 			}
@@ -87,7 +88,9 @@ private:
 			throw std::runtime_error("syntax error");
 		if (port < 1 || port > MAX_PORT)
 			throw std::runtime_error("port error");
-		config_server.setListen(std::make_pair(port, host));
+		if (host == "")
+			host = "0.0.0.0";
+		config_server.setListen(std::make_pair(host, port));
 	}
 	
 	void pars_root(ConfigServer &config_server, std::string & _line) {
