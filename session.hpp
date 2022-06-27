@@ -12,7 +12,7 @@
 #include <string.h>
 #include <iostream>
 #include "request.hpp"
-#include "Response.hpp"
+#include "response.hpp"
 #include <vector>
 
 #define BUF_LEN 1024

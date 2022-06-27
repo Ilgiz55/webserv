@@ -6,18 +6,22 @@ Server::Server(EventSelector *sel, int fd) : FdHandler(fd, true), selector(sel) 
 
 Server::~Server() {}
 
-Server* Server::Start(EventSelector *sel, Config *conf) {
+Server* Server::Start(EventSelector *sel, std::pair<std::string, int>& ip_port) {
     int ls, opt, res;
 
     struct sockaddr_in addr;
+    
     ls = socket(AF_INET, SOCK_STREAM, 0);
     if (ls == -1)
         return 0;
     opt = 1;
     setsockopt(ls, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
     addr.sin_family = AF_INET;
-    addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    addr.sin_port = htons(conf->getPort());
+    // addr.sin_addr.s_addr = htonl(INADDR_ANY);
+    res = inet_aton(ip_port.first.c_str(), &addr.sin_addr);
+    if (res == 0)
+        return 0;
+    addr.sin_port = htons(ip_port.second);
     res = bind(ls, (struct sockaddr *) &addr, sizeof(addr));
     if (res == -1)
         return 0;
@@ -42,7 +46,7 @@ void Server::Handle(bool r, bool w) {
 
 void Server::RemoveSession(Session *s) {
     selector->Remove(s);
-    auto tomove = std::find(sessions.begin(), sessions.end(), s);
+    std::list<Session*>::iterator tomove = std::find(sessions.begin(), sessions.end(), s);
     if (tomove != sessions.end()) {
         sessions.erase(tomove);
         std::cout << "connection closed... fd: " << (*tomove)->GetFd() << std::endl;
