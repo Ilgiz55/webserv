@@ -10,6 +10,8 @@ class Request {
 	private:
 		std::string method;
 		std::string uri;
+		std::map<std::string, std::string> get_param;
+		std::string anchor;
 		std::string protocol;
 		std::map<std::string, std::string> headers;
 		std::string body;
