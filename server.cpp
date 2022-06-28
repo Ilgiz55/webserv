@@ -1,12 +1,12 @@
 #include "server.hpp"
 
-Server::Server(EventSelector *sel, int fd) : FdHandler(fd, true), selector(sel) {
+Server::Server(ConfigServer conf, EventSelector *sel, int fd) : FdHandler(conf, fd, true), selector(sel) {
     selector->Add(this);
 }
 
 Server::~Server() {}
 
-Server* Server::Start(EventSelector *sel, std::pair<std::string, int>& ip_port) {
+Server* Server::Start(ConfigServer conf, EventSelector *sel, std::pair<std::string, int>& ip_port) {
     int ls, opt, res;
 
     struct sockaddr_in addr;
@@ -28,7 +28,7 @@ Server* Server::Start(EventSelector *sel, std::pair<std::string, int>& ip_port) 
     res = listen(ls, 15);
     if (res == -1)
         return 0;
-    return new Server(sel, ls);
+    return new Server(conf, sel, ls);
 }
 
 void Server::Handle(bool r, bool w) {
@@ -40,7 +40,7 @@ void Server::Handle(bool r, bool w) {
     sd = accept(GetFd(), (struct sockaddr*) &addr, &len);
     if (sd == -1)  
         return;
-    sessions.push_front(new Session(this, sd));
+    sessions.push_front(new Session(this->GetConfigServer(), this, sd));
     selector->Add(sessions.front());
 }
 

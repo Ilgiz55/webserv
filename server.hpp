@@ -5,6 +5,7 @@
 #include "selector.hpp"
 #include "session.hpp"
 #include "Config.hpp"
+#include "ConfigServer.hpp"
 
 #include <netinet/in.h>
  #include <arpa/inet.h>
@@ -20,12 +21,12 @@ class Server : public FdHandler {
 		EventSelector *selector;
 		std::list<Session*> sessions;
 
-		Server(EventSelector *sel, int fd);
+		Server(ConfigServer conf, EventSelector *sel, int fd);
 		virtual void Handle(bool r, bool w);
 
 	public:
 		~Server();
-		static Server *Start(EventSelector *sel, std::pair<std::string, int>& ip_port);
+		static Server *Start(ConfigServer conf, EventSelector *sel, std::pair<std::string, int>& ip_port);
 		void RemoveSession(Session *s);
 };
 
