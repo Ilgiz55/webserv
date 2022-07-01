@@ -8,6 +8,27 @@
 </head>
 <body>
     <p>This is an example of a simple HTML page with one paragraph and one image.</p>
+    <form action="add.cgi" method="POST">
+        <fieldset>
+          <legend>Enter two numbers to add</legend>
+          <label>First Number: <input type="number" name="num1"></label><br/>
+          <label>Second Number: <input type="number" name="num2"></label><br/>
+        </fieldset>
+        <button>Add</button>
+       </form>
     <img src="01.jpeg" alt="">
+    <form action="01.jpeg" method="post">
+        <div>
+          <label for="say">What greeting do you want to say?</label>
+          <input name="say" id="say" value="Hi">
+        </div>
+        <div>
+          <label for="to">Who do you want to say it to?</label>
+          <input name="to" id="to" value="Mom">
+        </div>
+        <div>
+          <button>Send my greetings</button>
+        </div>
+      </form>
 </body>
 </html>

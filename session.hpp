@@ -14,7 +14,7 @@
 #include "request.hpp"
 #include "response.hpp"
 #include <vector>
-#include "ConfigServer.hpp"
+#include "./config/ConfigServer.hpp"
 
 #define BUF_LEN 1024
 
