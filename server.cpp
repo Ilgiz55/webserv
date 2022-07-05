@@ -23,8 +23,11 @@ Server* Server::Start(ConfigServer conf, EventSelector *sel, std::pair<std::stri
         return 0;
     addr.sin_port = htons(ip_port.second);
     res = bind(ls, (struct sockaddr *) &addr, sizeof(addr));
-    if (res == -1)
+    if (res == -1) {
+        // std::cout << "listen socket error" << std::endl;
         return 0;
+    }
+    // std::cout << "I'm listening fd: " << ls << std::endl;
     res = listen(ls, 15);
     if (res == -1)
         return 0;
