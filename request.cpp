@@ -38,22 +38,24 @@ void Request::setUri(const std::string& a_uri) {
 	else 
 		param = a_uri.substr(param_start);
 	
-	size_t key_pos = pos + 1;
-	do {
-		size_t val_pos = a_uri.find('=', key_pos) + 1;
-		std::string key = a_uri.substr(key_pos, val_pos - key_pos - 1);
-		size_t end = a_uri.find('&', val_pos);
-		std::string val;
-		if (end != std::string::npos) {
-			val = a_uri.substr(val_pos, end - val_pos);
-			key_pos = end+1;
-		}
-		else {
-			val = a_uri.substr(val_pos);
-			key_pos = end;
-		}
-		get_param.insert(std::make_pair(key, val));
-	} while (key_pos != std::string::npos);
+	get_param = param;
+	// size_t key_pos = pos + 1;
+
+	// do {
+	// 	size_t val_pos = a_uri.find('=', key_pos) + 1;
+	// 	std::string key = a_uri.substr(key_pos, val_pos - key_pos - 1);
+	// 	size_t end = a_uri.find('&', val_pos);
+	// 	std::string val;
+	// 	if (end != std::string::npos) {
+	// 		val = a_uri.substr(val_pos, end - val_pos);
+	// 		key_pos = end+1;
+	// 	}
+	// 	else {
+	// 		val = a_uri.substr(val_pos);
+	// 		key_pos = end;
+	// 	}
+	// 	get_param.insert(std::make_pair(key, val));
+	// } while (key_pos != std::string::npos);
 
 }
 

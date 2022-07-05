@@ -6,6 +6,9 @@ Session::Session(ConfigServer _config, Server *a_master, int fd) : FdHandler(_co
 
 Session::~Session() {}
 
+Request& Session::GetRequest() {return request; }
+Response& Session::GetResponse() {return response; }
+
 void Session::Send() {
 	std::string buffer = response.getBuffer();
 	ssize_t sendBytes = send(GetFd(), buffer.c_str(), buffer.size(),0);
@@ -60,18 +63,18 @@ void Session::Parse() {
 
 void Session::SetResponse(){
 	response.setProtocol(request.getProtocol());
-	response.setStatus(" 200 OK\n");
+	// response.setStatus(" 200 OK\n");
 	response.setContentType(request.getUri());
-	try
-	{
-		std::string file_name = this->GetConfigServer().getRoot() + request.getUri();
-		response.setBody(read_file(file_name));
-	}
-	catch(const std::exception& e)
-	{
-		std::cerr << e.what() << std::endl;
-		response.setBody("NOT FOUND\n");
-	}
+	// try
+	// {
+	// 	std::string file_name = this->GetConfigServer().getRoot() + request.getUri();
+	// 	response.setBody(read_file(file_name));
+	// }
+	// catch(const std::exception& e)
+	// {
+	// 	std::cerr << e.what() << std::endl;
+	// 	response.setBody("NOT FOUND\n");
+	// }
 	response.setHeader(response.getProtocol() + response.getStatus() + response.getContentType());
 	response.setHeader("Content-Length: " + std::to_string(response.getBody().size()) + "\n\n");
 	response.setBuffer(response.getHeaders() + response.getBody());
@@ -83,6 +86,8 @@ void Session::Handle(bool r, bool w) {
 	Receive();
 	Parse();
 	std::cout << req << std::endl;
+	RequestHandler rh(this, request, response);
+	rh.Handle();
 	SetResponse();
 	std::string buffer = response.getBuffer();
 	Send();
