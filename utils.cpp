@@ -15,3 +15,23 @@ std::vector<std::string> ft_split(const std::string& str, const std::string& del
 	} while (pos < str.length() && prev < str.length());
 	return tokens;
 }
+
+bool isThereSuchDir(std::string full_path) {
+	struct stat s;
+	if( stat(full_path.c_str(),&s) == 0 )
+	{
+		if( s.st_mode & S_IFDIR )
+			return true;
+	}
+	return false;
+}
+
+bool isThereSuchFile(std::string full_path) {
+	struct stat s;
+	if( stat(full_path.c_str(),&s) == 0 )
+	{
+		if( s.st_mode & S_IFREG )
+			return true;
+	}
+	return false;
+}

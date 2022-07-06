@@ -19,8 +19,8 @@ void RequestHandler::Handle() {
 void RequestHandler::ParseFileType() {
 
 	std::string uri = request.getUri();
-	uri = "/images/";
-	uri = "/panda.html";
+	// uri = "/images/";
+	// uri = "/panda.html";
 
 	// std::string file_type;
 	size_t pos = uri.find_last_of('.');
@@ -44,11 +44,13 @@ void RequestHandler::GetPath() {
 	loc = conf.getLocation();
 	std::string uri = request.getUri();
 	std::map<std::string, Location>::iterator it;
-	for (it = loc.begin(); it != loc.end(); ++it) {
-		size_t pos = it->first.find(file_type.c_str());
-		if (pos != std::string::npos) {
-			path = it->second.getRoot() + request.getUri();
-			return;
+	if (isfile) {
+		for (it = loc.begin(); it != loc.end(); ++it) {
+			size_t pos = it->first.find(file_type.c_str());
+			if (pos != std::string::npos) {
+				path = it->second.getRoot() + request.getUri();
+				return;
+			}
 		}
 	}
 
@@ -65,25 +67,56 @@ void RequestHandler::GetPath() {
 
 void RequestHandler::Get() {
 	if (static_site && isfile) {
-		try {
+		if (isThereSuchFile(path)) {
 			response.setBody(read_file(path));
 			response.setStatus(" 200 OK\n");
 		}
-		catch(const std::exception& e) {
-			std::cerr << e.what() << std::endl;
+		else {
 			response.setBody("FILE NOT FOUND\n");
 			response.setStatus(" 404 Not Found\n");
 		}
+		// try {
+		// 	response.setBody(read_file(path));
+		// 	response.setStatus(" 200 OK\n");
+		// }
+		// catch(const std::exception& e) {
+		// 	std::cerr << e.what() << std::endl;
+		// 	response.setBody("FILE NOT FOUND\n");
+		// 	response.setStatus(" 404 Not Found\n");
+		// }
 	}
-	else if (!isfile) {
-		// list of files and folders
-		response.setBody("here will be the list of files and folders, but I don't know hot to do it for now");
-		response.setStatus(" 200 OK\n");
+	else if (!isfile) {		// list of files and folders
+		if (isThereSuchDir(path)) {
+			if (conf.getAutoIndex()) {
+				response.setBody("here will be the list of files and folders, but I don't know hot to do it for now");
+				response.setStatus(" 200 OK\n");
+			}
+			else {
+				std::string index_path = conf.getRoot() + "/" + conf.getIndex();
+				if (isThereSuchFile(index_path)) {
+					response.setBody(read_file(index_path));
+					response.setStatus(" 200 OK\n");
+				}
+				else {
+					response.setBody("INDEX FILE NOT FOUND\n");
+					response.setStatus(" 404 Not Found\n");
+				}
+			}
+		}
+		else {
+			response.setBody("DIRECTORY NOT FOUND\n");
+			response.setStatus(" 404 Not Found\n");
+		}
 	}
-	else if (!static_site && isfile) {
-		// cgi
-		response.setBody("here will be the result of cgi work");
-		response.setStatus(" 200 OK\n");
+	else if (!static_site && isfile) {  	// cgi
+		if (isThereSuchFile(path)) {
+			response.setBody("here will be the result of cgi work"); // put here the function for cgi
+			response.setStatus(" 200 OK\n");
+		}
+		else {
+			response.setBody("FILE NOT FOUND\n");
+			response.setStatus(" 404 Not Found\n");
+		}
 	}
 }
 

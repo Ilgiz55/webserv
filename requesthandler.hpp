@@ -2,6 +2,7 @@
 #define REQUESTHANDLER_HPP
 
 #include "session.hpp"
+#include "utils.hpp"
 
 // class Session;
 

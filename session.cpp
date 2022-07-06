@@ -34,6 +34,8 @@ void Session::Parse() {
 	request.setBody(req.substr(pos + 4));
 	req = req.substr(0, pos+2);
 	std::vector<std::string> h = ft_split(req, "\r\n");
+	if (h.empty())
+		return;
 	std::string firstline = h[0];
 	size_t start;
 	size_t end = firstline.find(' ');
@@ -84,13 +86,25 @@ void Session::Handle(bool r, bool w) {
 	if (!r)
 		return;
 	Receive();
-	Parse();
+	try {
+		Parse();
+	}
+	catch(const std::exception& e) {
+		std::cerr << e.what() << std::endl;
+		std::cout << "error in parse" << std::endl;
+	}
 	std::cout << req << std::endl;
 	RequestHandler rh(this, request, response);
 	rh.Handle();
 	SetResponse();
 	std::string buffer = response.getBuffer();
-	Send();
+	try {
+		Send();
+	}
+	catch(const std::exception& e) {
+		std::cerr << e.what() << std::endl;
+		std::cout << "error in send" << std::endl;
+	}
 	master->RemoveSession(this);
 
 }
