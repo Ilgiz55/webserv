@@ -73,11 +73,11 @@ void		CgiHandler::_setEnv(Request &request, ConfigServer &config) {
 	setenv("GATEWAY_INTERFACE", "CGI/1.1", 1);
 	setenv("PATH_INFO", request.getUri().c_str(), 1);
 	setenv("REQUEST_URI", request.getUri().c_str(), 1);
-	setenv("QUERY_STRING", _request_query.c_str(), 1);
-	setenv("REQUEST_METHOD", _request_method.c_str(), 1);
+	setenv("QUERY_STRING", request.getUri().c_str().c_str(), 1); // change for QUERY
+	setenv("REQUEST_METHOD", request.getMethod().c_str(), 1);
 	char buffer[16];
-	inet_ntop( AF_INET, &_addr.sin_addr, buffer, sizeof(buffer));
-	setenv("REMOTE_ADDR", buffer, 1);
+	// inet_ntop( AF_INET, &_addr.sin_addr, buffer, sizeof(buffer));
+	// setenv("REMOTE_ADDR", buffer, 1);
 	setenv("SCRIPT_NAME", _response_location->GetCgiPath().c_str(), 1);
 	setenv("SERVER_NAME", "webserv", 1);
 	setenv("SERVER_PORT", std::to_string(_server->GetPort()).c_str(), 1);
