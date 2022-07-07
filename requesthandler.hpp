@@ -8,28 +8,33 @@
 
 class RequestHandler {
 	// Session *session;
-	ConfigServer conf;
+	ConfigServer conf_serv;
 	Response& response;
 	Request& request;
+	Location location;
 	std::string path;
-	std::string file_type;
+	// AConfig conf;
+	// std::string file_type;
 
-	std::string root;
-	std::string root_php;
-	std::string root_image;
+	// std::string root;
+	// std::string root_php;
+	// std::string root_image;
 
 	bool static_site;
 	bool isfile;
 
 public:
-	RequestHandler(FdHandler *s, Request& req, Response& res);
+	RequestHandler(ConfigServer conf, Request& req, Response& res);
 	~RequestHandler() {}
-	void Get();
+	void Get(AConfig& config);
 	void Post();
 	void Delete();
 
 	void ParseFileType();
 	void GetPath();
+	AConfig GetConf();
+	void GetForFile(std::string path, AConfig conf);
+	void GetForDir(std::string path);
 
 	void Handle();
 };

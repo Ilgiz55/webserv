@@ -1,72 +1,51 @@
 #include "requesthandler.hpp"
 
-RequestHandler::RequestHandler(FdHandler *s, Request& req, Response& res) : isfile(true), static_site(true), request(req), response(res) {
-	conf = s->GetConfigServer();
-}
+RequestHandler::RequestHandler(ConfigServer conf, Request& req, Response& res) : conf_serv(conf),  isfile(true), static_site(true), request(req), response(res) {}
 
 void RequestHandler::Handle() {
-	ParseFileType();
-	GetPath();
+	AConfig conf = GetConf();
 	std::string method = request.getMethod();
 	if (method == "GET")
-		this->Get();
+		this->Get(conf);
 	else if (method == "POST")
 		this->Post();
 	else if (method == "DELETE")
 		this->Delete();
 }
 
-void RequestHandler::ParseFileType() {
-
-	std::string uri = request.getUri();
-	// uri = "/images/";
-	// uri = "/panda.html";
-
-	// std::string file_type;
-	size_t pos = uri.find_last_of('.');
-	if (pos == std::string::npos) {
-		isfile = false;
-		return;
-	}
-	size_t pos_end = uri.find('/', pos+1);
-	if (pos_end == std::string::npos) 
-		file_type = uri.substr(pos+1);
-	else 
-		file_type = uri.substr(pos+1, pos_end - pos);
-
-	if (file_type == "php")
-		static_site = false;
-	
-}
-
-void RequestHandler::GetPath() {
+AConfig RequestHandler::GetConf() {
 	std::map<std::string, Location> loc;
-	loc = conf.getLocation();
+	loc = conf_serv.getLocation();
 	std::string uri = request.getUri();
+	if (loc.empty()) {
+		path = conf_serv.getRoot() + uri;
+		return conf_serv;
+	}
 	std::map<std::string, Location>::iterator it;
-	if (isfile) {
-		for (it = loc.begin(); it != loc.end(); ++it) {
-			size_t pos = it->first.find(file_type.c_str());
-			if (pos != std::string::npos) {
-				path = it->second.getRoot() + request.getUri();
-				return;
+	size_t len = 0;
+	for (it = loc.begin(); it != loc.end(); ++it) {
+		if (uri.find(it->first) != std::string::npos) {
+			if (it->first.length() > len) {
+				path = it->second.getRoot() + uri;
+				location = it->second;
+				len = it->first.length();
 			}
 		}
 	}
-
-	for  (it = loc.begin(); it != loc.end(); ++it) {
-		size_t pos = uri.find(it->first);
-		if(pos != std::string::npos) {
-			path = it->second.getRoot() + request.getUri();
-			return;
+	if (!request.getFileType().empty()){
+		for (it = loc.begin(); it != loc.end(); ++it) {
+			if (it->first.find(request.getFileType()) != std::string::npos) {
+				path = it->second.getRoot() + uri;
+				location = it->second;
+				break;
+			}
 		}
 	}
-
-	path = conf.getRoot();
+	return location;
 }
 
-void RequestHandler::Get() {
-	if (static_site && isfile) {
+void RequestHandler::GetForFile(std::string path, AConfig conf) {
+	if (conf.getCGIPath().empty()) { 
 		if (isThereSuchFile(path)) {
 			response.setBody(read_file(path));
 			response.setStatus(" 200 OK\n");
@@ -75,32 +54,29 @@ void RequestHandler::Get() {
 			response.setBody("FILE NOT FOUND\n");
 			response.setStatus(" 404 Not Found\n");
 		}
-		// try {
-		// 	response.setBody(read_file(path));
-		// 	response.setStatus(" 200 OK\n");
-		// }
-		// catch(const std::exception& e) {
-		// 	std::cerr << e.what() << std::endl;
-		// 	response.setBody("FILE NOT FOUND\n");
-		// 	response.setStatus(" 404 Not Found\n");
-		// }
 	}
-	else if (!isfile) {		// list of files and folders
+	else {
+			//CGI work
+	}
+}
+
+void RequestHandler::Get(AConfig& conf) {
+	if (!request.getFileType().empty())  // if file
+		GetForFile(path, conf);
+	else {
 		if (isThereSuchDir(path)) {
 			if (conf.getAutoIndex()) {
-				response.setBody("here will be the list of files and folders, but I don't know hot to do it for now");
-				response.setStatus(" 200 OK\n");
+				//autoindex work
+			}
+			else if (!conf.getIndex().empty()) {
+				request.setUri(request.getUri() + conf.getIndex());
+				AConfig new_conf = GetConf();
+				Get(new_conf);
 			}
 			else {
-				std::string index_path = conf.getRoot() + "/" + conf.getIndex();
-				if (isThereSuchFile(index_path)) {
-					response.setBody(read_file(index_path));
-					response.setStatus(" 200 OK\n");
-				}
-				else {
-					response.setBody("INDEX FILE NOT FOUND\n");
-					response.setStatus(" 404 Not Found\n");
-				}
+				// some error then we don't have index rule
+				response.setBody("some error then we don't have index rule\n");
+				response.setStatus(" 404 Not Found\n");
 			}
 		}
 		else {
@@ -108,17 +84,9 @@ void RequestHandler::Get() {
 			response.setStatus(" 404 Not Found\n");
 		}
 	}
-	else if (!static_site && isfile) {  	// cgi
-		if (isThereSuchFile(path)) {
-			response.setBody("here will be the result of cgi work"); // put here the function for cgi
-			response.setStatus(" 200 OK\n");
-		}
-		else {
-			response.setBody("FILE NOT FOUND\n");
-			response.setStatus(" 404 Not Found\n");
-		}
-	}
 }
+
+
 
 void RequestHandler::Post() {
 

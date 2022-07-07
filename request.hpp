@@ -5,13 +5,14 @@
 
 #include <map>
 #include <string.h>
+#include "utils2.hpp"
 
 class Request {
 	private:
 		std::string method;
 		std::string uri;
 		std::string get_param;
-		std::string anchor;
+		std::string file_type;
 		std::string protocol;
 		std::map<std::string, std::string> headers;
 		std::string body;
@@ -24,6 +25,7 @@ class Request {
 		const std::string& getProtocol() const;
 		std::string getHeader(const std::string& key) const;
 		const std::string& getBody() const;
+		const std::string& getFileType() const;
 		
 		void setMethod(const std::string& a_method);
 		void setUri(const std::string& a_uri);
