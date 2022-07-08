@@ -56,8 +56,58 @@ void RequestHandler::GetForFile(std::string path, AConfig conf) {
 		}
 	}
 	else {
+		
 			//CGI work
 	}
+}
+
+void RequestHandler::AutoIndex() {
+	DIR *dir;
+	struct dirent *entry;
+	dir = opendir(path.c_str());
+	if (!dir) {
+		response.setStatus(" 403\n");
+		return;
+	}
+	std::string body;
+	body = "<!DOCTYPE html>\n\
+			<html>\n\
+			<head>\n\
+			    <title> List of files </title>\n\
+			    <style>h1 {font-size: 200%;\n\
+			    font-family: Verdana, Arial, Helvetica, sans-serif;\n\
+			    color: #333366;}\n\
+			    a {font-size: 100%;\
+			    font-family: Verdana, Arial, Helvetica, sans-serif;\n\
+			    color: #333366;}\n\
+			    li :hover{font-size: 100%;\
+			    font-family: Verdana, Arial, Helvetica, sans-serif;\n\
+			    color: #ba2200;}\n\
+			    li :active{font-size: 100%;\
+			    font-family: Verdana, Arial, Helvetica, sans-serif;\n\
+			    color: #918e00;}\n\
+			<style>footer {\n\
+			    position: fixed;\n\
+			    color: #333366;}\n\
+			    left: 0; bottom: 0;\n\
+			    color: #333366;}\n\
+			</style>\n\
+			</head>\n\
+			<body>\n\
+			<h1 align=\"center\"> List of files</h1>\n";
+	while ((entry = readdir(dir)) != NULL) {
+		body.append("<li align=\"center\"> <a href = \"http://");
+		body.append(request.getHeader("Host") + request.getUri());
+		body.append(entry->d_name);
+		body.append("\">");
+		body.append(entry->d_name);
+		body.append("</a></li><br>");
+		body.append("\n");
+	}
+	body.append("</body>\n </html>\n");
+	std::cout << body << std::endl;
+	response.setBody(body);
+	response.setStatus(" 200 OK\n");
 }
 
 void RequestHandler::Get(AConfig& conf) {
@@ -66,7 +116,7 @@ void RequestHandler::Get(AConfig& conf) {
 	else {
 		if (isThereSuchDir(path)) {
 			if (conf.getAutoIndex()) {
-				//autoindex work
+				AutoIndex();
 			}
 			else if (!conf.getIndex().empty()) {
 				request.setUri(request.getUri() + conf.getIndex());

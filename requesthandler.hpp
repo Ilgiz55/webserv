@@ -35,6 +35,7 @@ public:
 	AConfig GetConf();
 	void GetForFile(std::string path, AConfig conf);
 	void GetForDir(std::string path);
+	void AutoIndex();
 
 	void Handle();
 };
