@@ -35,7 +35,7 @@ AConfig RequestHandler::GetConf() {
 	if (!request.getFileType().empty()){
 		for (it = loc.begin(); it != loc.end(); ++it) {
 			if (it->first.find(request.getFileType()) != std::string::npos) {
-				path = it->second.getRoot() + uri;
+				path = it->second.getRoot() + uri.substr(uri.find_last_of("/"));
 				location = it->second;
 				break;
 			}
@@ -96,8 +96,12 @@ void RequestHandler::AutoIndex() {
 			<body>\n\
 			<h1 align=\"center\"> List of files</h1>\n";
 	while ((entry = readdir(dir)) != NULL) {
+		if (!strcmp(entry->d_name, ".") || !strcmp(entry->d_name, ".."))
+			continue;
 		body.append("<li align=\"center\"> <a href = \"http://");
 		body.append(request.getHeader("Host") + request.getUri());
+		if (request.getFileType().empty() && (request.getUri().at(request.getUri().length() - 1) != '/'))
+			body.append("/");
 		body.append(entry->d_name);
 		body.append("\">");
 		body.append(entry->d_name);
@@ -111,28 +115,18 @@ void RequestHandler::AutoIndex() {
 }
 
 void RequestHandler::Get(AConfig& conf) {
-	if (!request.getFileType().empty())  // if file
+	if (!request.getFileType().empty())
 		GetForFile(path, conf);
+	else if (isThereSuchDir(path) && conf.getAutoIndex())
+		AutoIndex();
 	else {
-		if (isThereSuchDir(path)) {
-			if (conf.getAutoIndex()) {
-				AutoIndex();
-			}
-			else if (!conf.getIndex().empty()) {
-				request.setUri(request.getUri() + conf.getIndex());
-				AConfig new_conf = GetConf();
-				Get(new_conf);
-			}
-			else {
-				// some error then we don't have index rule
-				response.setBody("some error then we don't have index rule\n");
-				response.setStatus(" 404 Not Found\n");
-			}
-		}
-		else {
-			response.setBody("DIRECTORY NOT FOUND\n");
-			response.setStatus(" 404 Not Found\n");
-		}
+		std::string new_uri = request.getUri();
+		if (new_uri.at(new_uri.length() - 1) != '/')
+			new_uri.append("/");
+		new_uri.append(conf.getIndex());
+		request.setUri(new_uri);
+		AConfig new_conf = GetConf();
+		Get(new_conf);
 	}
 }
 
