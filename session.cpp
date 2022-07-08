@@ -113,7 +113,7 @@ void Session::Handle(bool r, bool w) {
 		std::cout << "error in parse" << std::endl;
 	}
 	std::cout << req << std::endl;
-	RequestHandler rh(this, request, response);
+	RequestHandler rh(this->GetConfigServer(), request, response);
 	rh.Handle();
 	SetResponse();
 	std::string buffer = response.getBuffer();
