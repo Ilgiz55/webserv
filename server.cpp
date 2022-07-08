@@ -31,6 +31,7 @@ Server* Server::Start(ConfigServer conf, EventSelector *sel, std::pair<std::stri
     res = listen(ls, 15);
     if (res == -1)
         return 0;
+	fcntl(ls, F_SETFL, O_NONBLOCK);
     return new Server(conf, sel, ls);
 }
 
@@ -43,6 +44,7 @@ void Server::Handle(bool r, bool w) {
     sd = accept(GetFd(), (struct sockaddr*) &addr, &len);
     if (sd == -1)  
         return;
+    fcntl(sd, F_SETFL, O_NONBLOCK);
     sessions.push_front(new Session(this->GetConfigServer(), this, sd));
     selector->Add(sessions.front());
 }

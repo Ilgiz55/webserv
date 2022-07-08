@@ -16,11 +16,13 @@
 #include <vector>
 #include "./config/ConfigServer.hpp"
 
+#include "requesthandler.hpp"
+
 #define BUF_LEN 1024
 
 class Server;
 
-class Session : FdHandler {
+class Session : public FdHandler {
 	friend class Server;
 	char buffer[BUF_LEN];
 	std::string req;
@@ -28,7 +30,7 @@ class Session : FdHandler {
 	Response response;
 	// ConfigServer config;
 	Server *master;
-
+public:
 	Session(ConfigServer _config, Server *master, int fd);
 	~Session();
 	void Send();
@@ -36,6 +38,11 @@ class Session : FdHandler {
 	void Parse();
 	void SetResponse();
 	virtual void Handle(bool r, bool w);
+	// virtual bool WantRead() const {return false;}
+    // virtual bool WantWrite() const {return true;}
+
+	Request& GetRequest();
+	Response& GetResponse();
 
 };
 

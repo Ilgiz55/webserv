@@ -10,7 +10,7 @@ class Request {
 	private:
 		std::string method;
 		std::string uri;
-		std::map<std::string, std::string> get_param;
+		std::string get_param;
 		std::string anchor;
 		std::string protocol;
 		std::map<std::string, std::string> headers;
@@ -22,6 +22,7 @@ class Request {
 		const std::string& getMethod() const;
 		const std::string& getUri() const;
 		const std::string& getProtocol() const;
+		const std::string& getQuari() const;
 		std::string getHeader(const std::string& key) const;
 		const std::string& getBody() const;
 		

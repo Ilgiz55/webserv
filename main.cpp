@@ -21,9 +21,9 @@ int main(int agrc, char **argv)
     std::vector<ConfigServer>::iterator it_end = conf->getConfigs().end();
     int i = 1;
     for(; it != it_end; ++it ) {
-        std::cout << "Server: " << i++ << std::endl;
-        (*it).printConfigServer();
-        serv.push_back(Server::Start(*it, selector, (*it).getPort()));
+        // std::cout << "Server: " << i++ << std::endl;
+        // (*it).printConfigServer();
+        serv.push_back(Server::Start(*it, selector, (*it).getListen()));
     }
 
     // if (!serv)

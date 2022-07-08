@@ -6,6 +6,9 @@ Session::Session(ConfigServer _config, Server *a_master, int fd) : FdHandler(_co
 
 Session::~Session() {}
 
+Request& Session::GetRequest() {return request; }
+Response& Session::GetResponse() {return response; }
+
 void Session::Send() {
 	std::string buffer = response.getBuffer();
 	ssize_t sendBytes = send(GetFd(), buffer.c_str(), buffer.size(),0);
@@ -31,6 +34,8 @@ void Session::Parse() {
 	request.setBody(req.substr(pos + 4));
 	req = req.substr(0, pos+2);
 	std::vector<std::string> h = ft_split(req, "\r\n");
+	if (h.empty())
+		return;
 	std::string firstline = h[0];
 	size_t start;
 	size_t end = firstline.find(' ');
@@ -59,52 +64,22 @@ void Session::Parse() {
 }
 
 void Session::SetResponse(){
-	if (request.getMethod() == "GET")
-	{
-		std::cout << "_____________________________________\n";
-		response.setProtocol(request.getProtocol());
-		std::cout << "URI: " << request.getUri() << std::endl;
-		std::cout << "Body: " << request.getBody() << std::endl;
-		// std::cout << "Body: " << request.getBody() << std::endl;
-		std::string file_name = this->GetConfigServer().getRoot() + request.getUri();
-		if (request.getUri().find_last_of('.') == std::string::npos)
-		{
-			file_name += "/" + this->GetConfigServer().getIndex();
-		}
-		if (request.getUri().find_last_of(".php") != std::string::npos)
-		{
-			int fd[2];
-			pid_t id;
-			if (pipe(fd) == -1)
-				exit_error(e.what(), 1);
-			id = fork();
-			if (id == -1)
-			{
-				std::error << "fork\n";
-				exit_error(e.what(), 1);
-			}
-		}
-		try
-		{
-			response.setBody(read_file(file_name));
-		}
-		catch(const std::exception& e)
-		{
-			std::cerr << "response   !!!" << std::endl;
-			std::cerr << e.what() << std::endl;
-			response.setBody("NOT FOUND\n");
-		}
-		response.setStatus(" 200 OK\n");
-		response.setContentType(request.getUri());
-		response.setHeader(response.getProtocol() + response.getStatus() + response.getContentType());
-		response.setHeader("Content-Length: " + std::to_string(response.getBody().size()) + "\n\n");
-		response.setBuffer(response.getHeaders() + response.getBody());
-		std::cout << "________________________________\n";
-	}
-	else if (request.getMethod() == "POST")
-	{}
-	else if (request.getMethod() == "DELETE")
-	{}
+	response.setProtocol(request.getProtocol());
+	// response.setStatus(" 200 OK\n");
+	response.setContentType(request.getUri());
+	// try
+	// {
+	// 	std::string file_name = this->GetConfigServer().getRoot() + request.getUri();
+	// 	response.setBody(read_file(file_name));
+	// }
+	// catch(const std::exception& e)
+	// {
+	// 	std::cerr << e.what() << std::endl;
+	// 	response.setBody("NOT FOUND\n");
+	// }
+	response.setHeader(response.getProtocol() + response.getStatus() + response.getContentType());
+	response.setHeader("Content-Length: " + std::to_string(response.getBody().size()) + "\n\n");
+	response.setBuffer(response.getHeaders() + response.getBody());
 }
 
 // void Session::SetResponse(){
@@ -130,21 +105,25 @@ void Session::Handle(bool r, bool w) {
 	if (!r)
 		return;
 	Receive();
-	try
-	{
-		/* code */
+	try {
 		Parse();
-		std::cout << req << std::endl;
 	}
-	catch(const std::exception& e)
-	{
-		std::cerr << "!!!!!!!!! Handle BLOCK !!!!!!!!!! ERROR" << std::endl;
-		std::cerr << e.what() << '\n';
-		exit_error(e.what(), 1);
+	catch(const std::exception& e) {
+		std::cerr << e.what() << std::endl;
+		std::cout << "error in parse" << std::endl;
 	}
+	std::cout << req << std::endl;
+	RequestHandler rh(this, request, response);
+	rh.Handle();
 	SetResponse();
-	Send();
-	
+	std::string buffer = response.getBuffer();
+	try {
+		Send();
+	}
+	catch(const std::exception& e) {
+		std::cerr << e.what() << std::endl;
+		std::cout << "error in send" << std::endl;
+	}
 	master->RemoveSession(this);
 
 }
