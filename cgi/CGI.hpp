@@ -1,28 +1,21 @@
 #ifndef CGI_HPP
-
 # define CGI_HPP
 
-# include "webserv.hpp"
+#include <unistd.h>
 
+# include "../webserv.hpp"
 # include "../config/ConfigPars.hpp"
 # include "../request.hpp"
 
 class Cgi {
 	public:
-		Cgi(Request &request, ConfigServer &config); // sets up env according to the request
-		Cgi(Cgi const &src);
-		virtual ~Cgi(void);
+		Cgi() {}
+		virtual ~Cgi() {}
 
-		Cgi   	&operator=(Cgi const &src);
-		std::string		executeCgi(const std::string &scriptName);	// executes Cgi and returns body
+		std::string		executeCgi(const std::string scriptName, Request &request, AConfig &conf);	// executes Cgi and returns body
 	private:
-		Cgi(void);
-		void								_setEnv(Request &request, ConfigServer &config);
-		char								**_getEnvAsCstrArray() const;
-		int									_getSocket(unsigned int port);
-		int									_connectSocket(unsigned int port);
-		std::map<std::string, std::string>	_env;
-		std::string							_body;
+		void		_setEnv(Request &request, AConfig &config);
+		std::string	_body;
 };
 
 // ENV TO IMPLEMENT

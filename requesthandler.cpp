@@ -56,8 +56,9 @@ void RequestHandler::GetForFile(std::string path, AConfig conf) {
 		}
 	}
 	else {
-		
 			//CGI work
+		Cgi cgi;
+		response.setBody(cgi.executeCgi(path, request,conf));
 	}
 }
 

@@ -3,6 +3,7 @@
 
 #include "session.hpp"
 #include "utils.hpp"
+#include "./cgi/CGI.hpp"
 
 // class Session;
 

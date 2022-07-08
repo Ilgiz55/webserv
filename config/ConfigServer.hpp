@@ -41,7 +41,8 @@ public:
     void setServerName(std::string s_name) { _server_name = s_name; }
     void setLocation(std::pair<std::string, Location> lctn) { _location.insert(lctn); }
     std::map<std::string, Location>& getLocation() { return _location; }
-    std::pair<std::string, int>& getPort() { return _listen; }
+    std::pair<std::string, int>& getListen() { return _listen; }
+    int& getPort() { return _listen.second; }
 
     //check pars
     // void printConfigServer()

@@ -1,32 +1,6 @@
 #include "CGI.hpp"
 
-Cgi::Cgi(Request &request, ConfigServer &config):
-_body(request.getBody())
-{
-	this->_setEnv(request, config);
-}
-
-Cgi::Cgi(Cgi const &src) {
-	if (this != &src) {
-		this->_body = src._body;
-		this->_env = src._env;
-	}
-	return ;
-}
-
-Cgi::~Cgi(void) {
-	return ;
-}
-
-Cgi	&Cgi::operator=(Cgi const &src) {
-	if (this != &src) {
-		this->_body = src._body;
-		this->_env = src._env;
-	}
-	return *this;
-}
-
-void		Cgi::_setEnv(Request &request, ConfigServer &config) {
+void Cgi::_setEnv(Request &request, AConfig &config) {
 
 	// setenv("CONTENT_LENGTH", std::to_string(_content_length).c_str(), 1); //  I'll think about that tomorrow.
 	setenv("CONTENT_TYPE", "text/html", 1);
@@ -35,10 +9,10 @@ void		Cgi::_setEnv(Request &request, ConfigServer &config) {
 	setenv("REQUEST_URI", request.getUri().c_str(), 1);
 	setenv("QUERY_STRING", request.getQueryStr().c_str(), 1);
 	setenv("REQUEST_METHOD", request.getMethod().c_str(), 1);
-	setenv("REMOTE_ADDR", config.getListen().first.c_str(), 1);
+	// setenv("REMOTE_ADDR", config.getListen().first.c_str(), 1);
 	setenv("SCRIPT_NAME", "/Users/sfearow/.brew/bin/php-cgi", 1); //  I'll think about that tomorrow.
 	setenv("SERVER_NAME", "webserv", 1);
-	setenv("SERVER_PORT", std::to_string(config.getPort()).c_str(), 1);
+	// setenv("SERVER_PORT", std::to_string(config.getPort()).c_str(), 1);
 	setenv("SERVER_PROTOCOL", request.getProtocol().c_str(), 1);
 	setenv("SERVER_SOFTWARE", "WebServ/1.0", 1);
 	setenv("AUTH_TYPE", "", 1);
@@ -48,42 +22,23 @@ void		Cgi::_setEnv(Request &request, ConfigServer &config) {
 	setenv("REDIRECT_STATUS", "200", 1);
 
 	//  I'll think about that tomorrow.
-	for (std::map<std::string, std::string>::iterator it = _requst_header.begin(), \
-		it_end = _requst_header.end(); it != it_end; it++)
-	{
-		std::string tmp = it->first;
-		for (int i = 0; i < tmp.size(); i++)
-			tmp[i] = toupper(tmp[i]);
-		setenv(("HTTP_" + tmp).c_str(), it->second.c_str(), 1);
-	}
+// 	for (std::map<std::string, std::string>::iterator it = _requst_header.begin(), \
+// 		it_end = _requst_header.end(); it != it_end; it++)
+// 	{
+// 		std::string tmp = it->first;
+// 		for (int i = 0; i < tmp.size(); i++)
+// 			tmp[i] = toupper(tmp[i]);
+// 		setenv(("HTTP_" + tmp).c_str(), it->second.c_str(), 1);
+// 	}
 }
 
-char	**Cgi::_getEnvAsCstrArray() const {
-	char	**env = new char*[this->_env.size() + 1];
-	int	j = 0;
-	for (std::map<std::string, std::string>::const_iterator i = this->_env.begin(); i != this->_env.end(); i++) {
-		std::string	element = i->first + "=" + i->second;
-		env[j] = new char[element.size() + 1];
-		env[j] = strcpy(env[j], (const char*)element.c_str());
-		j++;
-	}
-	env[j] = NULL;
-	return env;
-}
-
-std::string	Cgi::executeCgi(const std::string& scriptName) {
+std::string Cgi::executeCgi(const std::string scriptName, Request &request, AConfig &config)
+{
 	pid_t		pid;
 	int			saveStdin;
 	int			saveStdout;
 	char		**env;
 	std::string	newBody;
-
-	try {
-		env = this->_getEnvAsCstrArray();
-	}
-	catch (std::bad_alloc &e) {
-		std::cerr << RED << e.what() << RESET << std::endl;
-	}
 
 	// SAVING STDIN AND STDOUT IN ORDER TO TURN THEM BACK TO NORMAL LATER
 	saveStdin = dup(STDIN_FILENO);
@@ -107,10 +62,17 @@ std::string	Cgi::executeCgi(const std::string& scriptName) {
 	}
 	else if (!pid)
 	{
-		char * const * nll = NULL;
+		extern char **environ;
+		_setEnv(request, config); //Cgi::_setEnv(Request &request, ConfigServer &config)
+		char const	*cgi_info[3];
+		cgi_info[0] = scriptName.c_str();
+		cgi_info[1] = scriptName.c_str();
+		cgi_info[2] = NULL;
+
 		dup2(fdIn, STDIN_FILENO);
 		dup2(fdOut, STDOUT_FILENO);
-		execve(scriptName.c_str(), nll, env);
+		if (execve(cgi_info[0], (char *const *)cgi_info, environ) == -1)
+			exit(1);
 		std::cerr << RED << "Execve crashed." << RESET << std::endl;
 		write(STDOUT_FILENO, "Status: 500\r\n\r\n", 15);
 	}
