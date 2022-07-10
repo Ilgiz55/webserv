@@ -33,7 +33,7 @@ public:
 	std::string getIndex();
 	bool getAutoIndex();
 	bool getIsGeneral();
-	std::string getCGIPath();
+	std::string &getCGIPath();
 };
 
 #endif

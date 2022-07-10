@@ -23,7 +23,9 @@ public:
 	void setContentType(const std::string& uri) {
 		std::size_t found = uri.find_last_of('.');
 		if (found == std::string::npos)
+		{
 			_contentType.append(_mine_types["txt"]);
+		}
 		else
 		{
 			std::string extension = uri.substr(found + 1);

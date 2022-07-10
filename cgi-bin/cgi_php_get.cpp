@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
+#include <iostream>
 
 char	*ft_strjoin(char const *s1, char const *s2)
 {
@@ -24,12 +25,13 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	return (start);
 }
 
-char* quary_string(const char **env)
+char* env_pars(char **env, const char *str)
 {
+    size_t l = strlen(str);
     while (*env)
     {
-        if (strcmp(*env,"QUERY_STRING="))
-            return strdup(*env + 13);
+        if (!strncmp(*env,str,l)) //"QUERY_STRING="
+            return strdup(*env + l);
         ++env;
     }
     return strdup("");;
@@ -39,30 +41,17 @@ int main(int argc, char **argv, char **env)
 {
     //php -r 'parse_str($argv[1],$_GET); include("index.php");' 'lesson=1&image=2'
     char *tmp;
-    char *arr[4];
+    char *arr[5];
     tmp = ft_strjoin("parse_str($argv[1],$_GET); include(\"", argv[1]);
     arr[0] = strdup("/usr/bin/php");
     arr[1] = strdup("-r");
     arr[2] = ft_strjoin(tmp, "\");");
     free(tmp);
-    // arr[2] = strdup("parse_str($argv[1],$_GET); include(\"index.php\");");
-    arr[3] = quary_string(env);
-    // arr[4] = strdup("\n");
-    // printf("%s\n", "arr[i]");
-    // arr[0] = strdup("/bin/ls");
-    // printf("%s\n", "arr[i]");
-    // arr[1] = strdup("-l");
-    // arr[3] = NULL;
-    
-    // return execve("php", arr, env);
+    arr[3] = env_pars(env, "QUERY_STRING=");
+    arr[4] = NULL;
     int n = execve(arr[0], arr, env);
-    // printf("%d\n", n);
     int i = 0;
-    while (arr[i])
-    {
-        printf("%s\n", arr[i]);
-        free(arr[i]);
-        i++;
-    }
+    while (*arr)
+        free(arr[i++]);
     return n;
 }

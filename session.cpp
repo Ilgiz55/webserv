@@ -65,7 +65,7 @@ void Session::Parse() {
 
 void Session::SetResponse(){
 	response.setProtocol(request.getProtocol());
-	// response.setStatus(" 200 OK\n");
+	response.setStatus(" 200 OK\n");
 	response.setContentType(request.getUri());
 	// try
 	// {
@@ -81,25 +81,6 @@ void Session::SetResponse(){
 	response.setHeader("Content-Length: " + std::to_string(response.getBody().size()) + "\n\n");
 	response.setBuffer(response.getHeaders() + response.getBody());
 }
-
-// void Session::SetResponse(){
-// 	response.setProtocol(request.getProtocol());
-// 	response.setStatus(" 200 OK\n");
-// 	response.setContentType(request.getUri());
-// 	try
-// 	{
-// 		std::string file_name = this->GetConfigServer().getRoot() + request.getUri();
-// 		response.setBody(read_file(file_name));
-// 	}
-// 	catch(const std::exception& e)
-// 	{
-// 		std::cerr << e.what() << std::endl;
-// 		response.setBody("NOT FOUND\n");
-// 	}
-// 	response.setHeader(response.getProtocol() + response.getStatus() + response.getContentType());
-// 	response.setHeader("Content-Length: " + std::to_string(response.getBody().size()) + "\n\n");
-// 	response.setBuffer(response.getHeaders() + response.getBody());
-// }
 
 void Session::Handle(bool r, bool w) {
 	if (!r)

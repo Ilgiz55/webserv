@@ -19,25 +19,25 @@
     <? if (htmlspecialchars($_GET["lesson"]) == 1) { ?>
 
         <a href="/" title="Go to my main page, honey">
-            <img src="img/page-1.jpg" alt="lesson one">
+            <img src="panda/img/page-1.jpg" alt="lesson one">
         </a>
 
     <? } elseif (htmlspecialchars($_GET["lesson"]) == 2) { ?>
 
         <a href="/" title="Go to my main page, honey">
-            <img src="img/page-2.jpg" alt="lesson two">
+            <img src="panda/img/page-2.jpg" alt="lesson two">
         </a>
 
     <? } elseif (htmlspecialchars($_GET["lesson"]) == 3) { ?>
 
         <a href="/" title="Go to my main page, honey">
-            <img src="img/page-3.jpg" alt="lesson three">
+            <img src="panda/img/page-3.jpg" alt="lesson three">
         </a>
 
     <? } else { ?>
 
         <a href="/" title="Go to my main page, honey">
-            <img src="img/main-page.jpg" alt="Main lazy panda">
+            <img src="panda/img/main-page.jpg" alt="Main lazy panda">
         </a>
 
     <? } ?>

@@ -43,14 +43,14 @@ void AConfig::setClientBodySize(const std::string BodySize) {
 		_cgi_path = atoll(BodySize.c_str()); // no checks
 }
 
-std::string AConfig::getRoot() { return (_root); }
+std::string AConfig::getRoot() { return _root; }
 
-std::vector<std::string> AConfig::getMethods() { return (_methods); }
+std::vector<std::string> AConfig::getMethods() { return _methods; }
 
-std::string AConfig::getIndex() { return (_index); }
+std::string AConfig::getIndex() { return _index; }
 
-bool AConfig::getAutoIndex() { return (_autoindex); }
+bool AConfig::getAutoIndex() { return _autoindex; }
 
-bool AConfig::getIsGeneral() { return (_isGeneral); }
+bool AConfig::getIsGeneral() { return _isGeneral; }
 
-std::string AConfig::getCGIPath() { return (_cgi_path); }
+std::string & AConfig::getCGIPath() { return _cgi_path; }

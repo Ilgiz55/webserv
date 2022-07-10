@@ -2,6 +2,7 @@
 # define CGI_HPP
 
 #include <unistd.h>
+#include <stdio.h>
 
 # include "../webserv.hpp"
 # include "../config/ConfigPars.hpp"

@@ -31,6 +31,8 @@ std::map<std::string, std::string> init_mime_types()
     mt.insert(std::make_pair("html","text/html"));
     mt.insert(std::make_pair("htm","text/html"));
     mt.insert(std::make_pair("shtml","text/html"));
+    mt.insert(std::make_pair("bin","text/html"));
+    // mt.insert(std::make_pair("bin","application/octet-stream")); //application/octet-stream
     mt.insert(std::make_pair("css","text/css"));
     mt.insert(std::make_pair("xml","text/xml"));
     mt.insert(std::make_pair("gif","image/gif"));
