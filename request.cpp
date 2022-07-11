@@ -10,6 +10,8 @@ const std::string& Request::getUri() const { return uri; }
 
 const std::string& Request::getProtocol() const { return protocol; }
 
+const std::string& Request::getQueryStr() const {return get_param; }
+
 std::string Request::getHeader(const std::string& key) const {
 	std::map<std::string, std::string>::const_iterator it = headers.find(key);
 	if (it == headers.end())

@@ -11,6 +11,7 @@ private:
     std::pair<std::string, int>     _listen;
 	std::string					    _server_name;
 	std::map<std::string, Location> _location;
+	std::map<std::string, std::string> _error_page;
 
 public:
     ConfigServer() : AConfig(true), _listen(std::make_pair("0.0.0.0", 8000)), _server_name("") {}
@@ -38,12 +39,20 @@ public:
             host = "127.0.0.1";
         _listen = std::make_pair(host, port);
     }
+    void setErrorPage(std::string str) {
+        std::vector<std::string> tmp = ft_split(str, " ");
+        if (tmp.size() != 2)
+            throw std::runtime_error("syntax error: error_page");
+        _error_page.insert(std::make_pair(tmp[0], tmp[1]));
+    }
     void setServerName(std::string s_name) { _server_name = s_name; }
     void setLocation(std::pair<std::string, Location> lctn) { _location.insert(lctn); }
     std::map<std::string, Location>& getLocation() { return _location; }
-    std::pair<std::string, int>& getPort() { return _listen; }
+    std::pair<std::string, int>& getListen() { return _listen; }
+    int& getPort() { return _listen.second; }
+    std::map<std::string, std::string> &getErrorPage() { return _error_page; }
 
-    // //check pars
+    //check pars
     // void printConfigServer()
     // {
     //     std::cout << "listen " << _listen.first << " " << _listen.second << std::endl;

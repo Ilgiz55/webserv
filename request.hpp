@@ -23,6 +23,7 @@ class Request {
 		const std::string& getMethod() const;
 		const std::string& getUri() const;
 		const std::string& getProtocol() const;
+		const std::string& getQueryStr() const;
 		std::string getHeader(const std::string& key) const;
 		const std::string& getBody() const;
 		const std::string& getFileType() const;
