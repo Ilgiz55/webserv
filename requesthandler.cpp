@@ -54,16 +54,26 @@ void RequestHandler::GetForFile(std::string path, AConfig conf) {
 			response.setStatus(" 200 OK\n");
 		}
 		else {
-			response.setBody("FILE NOT FOUND\n");
+			response.setBody("<p  style=\"font-size: 24px; font-weight:bold\"><b>Not Found</p></b><p>The requested URL was not found on this server.</p>\n");
 			response.setStatus(" 404 Not Found\n");
 		}
 	}
 	else {
-			//CGI work
+		//CGI work
 		Cgi cgi;
-		response.setBody(cgi.executeCgi(path, request,conf));
-		response.setStatus(" 200 OK\n");
-		std::cout << response.getBody() << std::endl;
+		try
+		{
+			response.setBody(cgi.executeCgi(path, request,conf));
+			response.setStatus(cgi.status);
+		}
+		catch(const std::exception& e)
+		{
+			response.setBody("<center><p  style=\"font-size: 48px; font-weight:bold\">500</p>\
+					<p  style=\"font-size: 48px; font-weight:bold\">Internal Server Error</p>\
+					<p>An internal server error has occured</p>\n</center>");
+			response.setStatus(cgi.status);
+			std::cerr << e.what() << std::endl;
+		}
 	}
 }
 

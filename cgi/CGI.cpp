@@ -1,6 +1,6 @@
 #include "CGI.hpp"
 
-void Cgi::_setEnv(Request &request, AConfig &config) {
+void Cgi::setEnv(Request &request, AConfig &config) {
 
 	// setenv("CONTENT_LENGTH", std::to_string(_content_length).c_str(), 1); //  I'll think about that tomorrow.
 	setenv("CONTENT_TYPE", "text/html", 1);
@@ -36,6 +36,7 @@ void Cgi::_setEnv(Request &request, AConfig &config) {
 std::string Cgi::executeCgi(const std::string scriptName, Request &request, AConfig &config)
 {
 	std::string	newBody;
+	status = "Status: 500\n";
 
 	std::cout << "scriptName=" << scriptName << std::endl;
 
@@ -48,19 +49,18 @@ std::string Cgi::executeCgi(const std::string scriptName, Request &request, ACon
 	long	fdIn = fileno(fIn);
 	long	fdOut = fileno(fOut);
 
-	write(fdIn, _body.c_str(), _body.size());
+	write(fdIn, newBody.c_str(), newBody.size());
 	lseek(fdIn, 0, SEEK_SET);
 
 	pid_t pid = fork();
 	if (pid == -1)
 	{
-		std::cerr << RED << "Fork crashed." << RESET << std::endl;
-		return ("Status: 500\r\n\r\n");
+		throw std::runtime_error("Fork error");
 	}
 	else if (!pid)
 	{
 		extern char **environ;
-		_setEnv(request, config); //Cgi::_setEnv(Request &request, ConfigServer &config)
+		setEnv(request, config); //Cgi::_setEnv(Request &request, ConfigServer &config)
 		char const	*cgi_cmd[3];
 		cgi_cmd[0] = config.getCGIPath().c_str();
 		cgi_cmd[1] = scriptName.c_str();
@@ -77,8 +77,11 @@ std::string Cgi::executeCgi(const std::string scriptName, Request &request, ACon
 		dup2(fdOut, STDOUT_FILENO);
 		if (execve(cgi_cmd[0], (char *const *)cgi_cmd, environ) == -1)
 		{
-			std::cerr << RED << "Execve crashed." << RESET << std::endl;
-			write(STDOUT_FILENO, "Status: 500\r\n\r\n", 15);
+			std::cerr << RED << "Execve error." << RESET << std::endl;
+			// write(STDOUT_FILENO, "Status: 500\r\n\r\n", 15);
+			write(STDOUT_FILENO, "<center><p  style=\"font-size: 48px; font-weight:bold\">500</p>\
+					<p  style=\"font-size: 48px; font-weight:bold\">Internal Server Error</p>\
+					<p>An internal server error has occured</p>\n</center>", 179);
 			exit(1);
 		}
 	}
@@ -86,9 +89,7 @@ std::string Cgi::executeCgi(const std::string scriptName, Request &request, ACon
 	{
 		char	buffer[CGI_BUFSIZE] = {0};
 		if (waitpid(pid, NULL, 0) == -1)
-		{
-			std::cerr << RED << "WAITPID ERROR" << RESET << std::endl;	
-		}
+			throw "WAITPID ERROR";
 		lseek(fdOut, 0, SEEK_SET);
 		int ret;
 		while ((ret = read(fdOut, buffer, CGI_BUFSIZE - 1)) != 0)
@@ -108,5 +109,6 @@ std::string Cgi::executeCgi(const std::string scriptName, Request &request, ACon
 	close(saveStdin);
 	close(saveStdout);
 
+	status = " 200 OK\n";
 	return (newBody);
 }

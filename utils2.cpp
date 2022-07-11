@@ -64,3 +64,28 @@ std::string ft_trim(const std::string &s)
 {
     return ft_rtrim(ft_ltrim(s));
 }
+
+// std::vector<std::string> _split(const std::string &str, const std::string &delim)
+// {
+// 	std::vector<std::string> tmp_split;
+
+//     tmp_split.push_back(str);
+//     size_t i = delim.length();
+//     while (i > 0)
+//     {
+//         std::stringstream ss(str);
+//         std::string item;
+//         while (std::getline(ss, item, delim))
+//         {
+//             tmp_split.push_back(item);
+//         }
+        
+//         ++i;
+//     }
+    
+// // 	std::stringstream ss(str);
+// // 	std::string item;
+// // 	while(std::getline(ss, item, delim))
+// // 		tmp_split.push_back(item);
+// // 	return tmp_split;
+// }

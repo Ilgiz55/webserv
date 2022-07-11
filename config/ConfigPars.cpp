@@ -60,6 +60,9 @@ void ConfigPars::pars_server(std::ifstream& ifs_config, ConfigServer& config_ser
 			config_server.setCGIPath(pars_line(_line, "cgi_path", flag));
 		else if ((found = _line.find("client_body_size")) != std::string::npos)
 			config_server.setClientBodySize(pars_line(_line, "client_body_size", flag));
+		//error_page
+		else if ((found = _line.find("error_page")) != std::string::npos)
+			config_server.setErrorPage(pars_line(_line, "error_page", flag));
 		else if ((found = _line.find("location")) != std::string::npos)
 		{
 			flag = 1;
