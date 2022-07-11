@@ -5,6 +5,17 @@ RequestHandler::RequestHandler(ConfigServer conf, Request& req, Response& res) :
 void RequestHandler::Handle() {
 	AConfig conf = GetConf();
 	std::string method = request.getMethod();
+	if (!conf.getMethods().empty()) {
+		std::vector<std::string>::iterator it = conf.getMethods().begin();
+		for (; it != conf.getMethods().end(); ++it) {
+			if (method == *it)
+				break;
+		}
+		if (it == conf.getMethods().end()){
+			response.setBody("method not allowed\n");
+			response.setStatus(" "); // add status code
+		}
+	}
 	if (method == "GET")
 		this->Get(conf);
 	else if (method == "POST")
@@ -56,7 +67,6 @@ void RequestHandler::GetForFile(std::string path, AConfig conf) {
 		}
 	}
 	else {
-		
 			//CGI work
 	}
 }
@@ -133,7 +143,7 @@ void RequestHandler::Get(AConfig& conf) {
 
 
 void RequestHandler::Post() {
-
+	std::cout << request.getBody() << std::endl;
 }
 
 void RequestHandler::Delete() {

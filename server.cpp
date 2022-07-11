@@ -54,7 +54,7 @@ void Server::RemoveSession(Session *s) {
     std::list<Session*>::iterator tomove = std::find(sessions.begin(), sessions.end(), s);
     if (tomove != sessions.end()) {
         sessions.erase(tomove);
-        std::cout << "connection closed... fd: " << (*tomove)->GetFd() << std::endl;
+        // std::cout << "connection closed... fd: " << (*tomove)->GetFd() << std::endl;
         delete *tomove;
     }
 }
