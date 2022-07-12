@@ -56,3 +56,5 @@ void Request::setHeader(const std::string& key, const std::string& value) {
 void Request::setBody(const std::string &a_str) { body = a_str; }
 
 bool Request::emptyHeader() const { return headers.empty(); }
+
+void Request::setQueryStr(std::string str) { get_param = str;}
