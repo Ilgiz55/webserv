@@ -9,7 +9,7 @@ void RequestHandler::Handle() {
 	if (method == "GET")
 		this->Get(conf);
 	else if (method == "POST")
-		this->Post();
+		this->Post(conf);
 	else if (method == "DELETE")
 		this->Delete();
 }
@@ -74,6 +74,8 @@ void RequestHandler::GetForFile(std::string path, AConfig conf) {
 			response.setStatus(cgi.status);
 			std::cerr << e.what() << std::endl;
 		}
+		std::cout << "-----PRINT BODY-----" <<std::endl;
+		std::cout << response.getBody() << std::endl;
 	}
 }
 
@@ -146,8 +148,8 @@ void RequestHandler::Get(AConfig& conf) {
 	}
 }
 
-void RequestHandler::Post() {
-
+void RequestHandler::Post(AConfig& conf) {
+	Get(conf);
 }
 
 void RequestHandler::Delete() {

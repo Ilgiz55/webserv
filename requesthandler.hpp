@@ -28,7 +28,7 @@ public:
 	RequestHandler(ConfigServer conf, Request& req, Response& res);
 	~RequestHandler() {}
 	void Get(AConfig& config);
-	void Post();
+	void Post(AConfig& config);
 	void Delete();
 
 	void ParseFileType();

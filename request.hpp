@@ -25,6 +25,7 @@ class Request {
 		const std::string& getProtocol() const;
 		const std::string& getQueryStr() const;
 		std::string getHeader(const std::string& key) const;
+		const std::map<std::string, std::string>& allHeader() const;
 		const std::string& getBody() const;
 		const std::string& getFileType() const;
 		
