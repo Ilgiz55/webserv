@@ -25,11 +25,11 @@ class RequestHandler {
 	bool isfile;
 
 public:
-	RequestHandler(ConfigServer conf, Request& req, Response& res);
+	RequestHandler(ConfigServer config, Request& req, Response& res);
 	~RequestHandler() {}
-	void Get(AConfig& config);
-	void Post();
-	void Delete();
+	void Get(AConfig& conf);
+	void Post(AConfig& conf);
+	void Delete(AConfig& conf);
 
 	void ParseFileType();
 	void GetPath();

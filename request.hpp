@@ -34,6 +34,7 @@ class Request {
 		void setHeader(const std::string& key, const std::string& value);
 		void setBody(const std::string &a_str);
 		bool emptyHeader() const;
+		void setQueryStr(std::string str);
 
 };
 

@@ -8,7 +8,7 @@ void Cgi::setEnv(Request &request, AConfig &config) {
 	setenv("PATH_INFO", request.getUri().c_str(), 1);
 	setenv("REQUEST_URI", request.getUri().c_str(), 1);
 	setenv("QUERY_STRING", request.getQueryStr().c_str(), 1);
-	// setenv("REQUEST_METHOD", request.getMethod().c_str(), 1);
+	setenv("REQUEST_METHOD", request.getMethod().c_str(), 1);
 	// setenv("REMOTE_ADDR", "127.0.0.1", 1); //  I'll think about that tomorrow.
 	// setenv("SCRIPT_NAME", "/Users/sfearow/.brew/bin/php-cgi", 1); //  I'll think about that tomorrow.
 	// setenv("SERVER_NAME", "webserv", 1);
@@ -49,7 +49,7 @@ std::string Cgi::executeCgi(const std::string scriptName, Request &request, ACon
 	long	fdIn = fileno(fIn);
 	long	fdOut = fileno(fOut);
 
-	write(fdIn, newBody.c_str(), newBody.size());
+	write(fdIn, request.getBody().c_str(), request.getBody().size());
 	lseek(fdIn, 0, SEEK_SET);
 
 	pid_t pid = fork();
@@ -61,6 +61,11 @@ std::string Cgi::executeCgi(const std::string scriptName, Request &request, ACon
 	{
 		extern char **environ;
 		setEnv(request, config); //Cgi::_setEnv(Request &request, ConfigServer &config)
+		// int iii = 0;
+		// while (environ[iii]) {
+		// 	std::cout << environ[iii] << std::endl;
+		// 	iii++;
+		// }
 		char const	*cgi_cmd[3];
 		cgi_cmd[0] = config.getCGIPath().c_str();
 		cgi_cmd[1] = scriptName.c_str();

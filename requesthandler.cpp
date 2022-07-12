@@ -1,13 +1,13 @@
 #include "requesthandler.hpp"
 #include "./cgi/CGI.hpp"
 
-RequestHandler::RequestHandler(ConfigServer conf, Request& req, Response& res) : conf_serv(conf),  isfile(true), static_site(true), request(req), response(res) {}
+RequestHandler::RequestHandler(ConfigServer config, Request& req, Response& res) : conf_serv(config),  isfile(true), static_site(true), request(req), response(res) {}
 
 void RequestHandler::Handle() {
 	AConfig conf = GetConf();
 	std::string method = request.getMethod();
+	std::vector<std::string>::iterator it = conf.getMethods().begin();
 	if (!conf.getMethods().empty()) {
-		std::vector<std::string>::iterator it = conf.getMethods().begin();
 		for (; it != conf.getMethods().end(); ++it) {
 			if (method == *it)
 				break;
@@ -20,9 +20,9 @@ void RequestHandler::Handle() {
 	if (method == "GET")
 		this->Get(conf);
 	else if (method == "POST")
-		this->Post();
+		this->Post(conf);
 	else if (method == "DELETE")
-		this->Delete();
+		this->Delete(conf);
 }
 
 AConfig RequestHandler::GetConf() {
@@ -57,8 +57,8 @@ AConfig RequestHandler::GetConf() {
 }
 
 void RequestHandler::GetForFile(std::string path, AConfig conf) {
-	std::cout << "-----TEST GetForFile-----" <<std::endl;
-	std::cout << path <<std::endl;
+	// std::cout << "-----TEST GetForFile-----" <<std::endl;
+	// std::cout << path <<std::endl;
 	if (conf.getCGIPath().empty()) { 
 		if (isThereSuchFile(path)) {
 			response.setBody(read_file(path));
@@ -157,10 +157,26 @@ void RequestHandler::Get(AConfig& conf) {
 	}
 }
 
-void RequestHandler::Post() {
-	std::cout << request.getBody() << std::endl;
+void RequestHandler::Post(AConfig& conf) {
+	// std::cout << "-----handeling post method-----" << std::endl;
+	// std::cout << "Body of post request:\n" << request.getBody() << std::endl << std::endl;
+	Get(conf);
+
 }
 
-void RequestHandler::Delete() {
-
+void RequestHandler::Delete(AConfig& conf) {
+	// std::cout << "-----handeling delete method-----" << std::endl;
+	// std::cout << "file to delete: " << path << std::endl;
+	if (isThereSuchFile(path)) {
+		if (remove(path.c_str()) != 0)
+			perror("Can't delete file");
+		else {
+			response.setBody("<html>File deleted</html>");
+			response.setStatus("200 OK");
+		}
+	}
+	else {
+		response.setBody("file not found");
+		response.setStatus("404 Not found\n");
+	}
 }
