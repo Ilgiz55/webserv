@@ -13,7 +13,7 @@ class Cgi {
 
 		std::string	executeCgi(const std::string scriptName, Request &request, AConfig &conf);	// executes Cgi and returns body
 	private:
-		void	setEnv(Request &request, AConfig &config);
+		void	setEnv(Request &request, AConfig &config, const std::string scriptName);
 };
 
 // ENV TO IMPLEMENT

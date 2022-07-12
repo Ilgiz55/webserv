@@ -85,6 +85,8 @@ void RequestHandler::GetForFile(std::string path, AConfig conf) {
 			response.setStatus(cgi.status);
 			std::cerr << e.what() << std::endl;
 		}
+		std::cout << "-----PRINT BODY-----" <<std::endl;
+		std::cout << response.getBody() << std::endl;
 	}
 }
 

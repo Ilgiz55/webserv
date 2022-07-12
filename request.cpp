@@ -19,6 +19,8 @@ std::string Request::getHeader(const std::string& key) const {
 	return it->second;
 }
 
+const std::map<std::string, std::string>& Request::allHeader() const { return headers; }
+
 const std::string& Request::getBody() const { return body; }
 
 const std::string& Request::getFileType() const { return file_type; }
