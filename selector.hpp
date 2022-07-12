@@ -59,31 +59,50 @@ public:
 			fd_set rds, wrs;
 			FD_ZERO(&rds);
 			FD_ZERO(&wrs);
-			for (i = 0; i <= max_fd; i++) {
-				if (fd_array[i]) {
-					if (fd_array[i]->WantRead())
-						FD_SET(i, &rds);
-					if(fd_array[i]->WantWrite())
-						FD_SET(i, &wrs);
+			// try
+			// {
+				/* code */
+				for (i = 0; i <= max_fd; i++) {
+					if (fd_array[i]) {
+						if (fd_array[i]->WantRead())
+							FD_SET(i, &rds);
+						if(fd_array[i]->WantWrite())
+							FD_SET(i, &wrs);
+					}
 				}
-			}
-			int res = select(max_fd + 1, &rds, &wrs, 0, 0);
-			if (res < 0) {
-				if (errno == EINTR)
-					continue;
-				else
-					break;
-			}
-			if (res > 0) {
-				for (i = 0; i <=max_fd; i++) {
-					if (!fd_array[i])
+			// }
+			// catch(const std::exception& e)
+			// {
+			// 	std::cerr << "RUN BLOCK 1" << std::endl;
+			// 	std::cerr << e.what() << '\n';
+			// }
+			// try
+			// {
+				/* code */
+				int res = select(max_fd + 1, &rds, &wrs, 0, 0);
+				if (res < 0) {
+					if (errno == EINTR)
 						continue;
-					bool r = FD_ISSET(i, &rds);
-					bool w = FD_ISSET(i, &wrs);
-					if (r || w)
-						fd_array[i]->Handle(r, w);
+					else
+						break;
 				}
-			}
+				if (res > 0) {
+					for (i = 0; i <=max_fd; i++) {
+						if (!fd_array[i])
+							continue;
+						bool r = FD_ISSET(i, &rds);
+						bool w = FD_ISSET(i, &wrs);
+						if (r || w)
+							fd_array[i]->Handle(r, w);
+					}
+				}
+			// }
+			// catch(const std::exception& e)
+			// {
+			// 	std::cerr << "RUN BLOCK 2" << std::endl;
+			// 	std::cerr << e.what() << '\n';
+			// }
+			
 		} while (!quit_flag);
 	}
 };

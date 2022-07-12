@@ -31,6 +31,8 @@ std::map<std::string, std::string> init_mime_types()
     mt.insert(std::make_pair("html","text/html"));
     mt.insert(std::make_pair("htm","text/html"));
     mt.insert(std::make_pair("shtml","text/html"));
+    mt.insert(std::make_pair("bin","text/html"));
+    // mt.insert(std::make_pair("bin","application/octet-stream")); //application/octet-stream
     mt.insert(std::make_pair("css","text/css"));
     mt.insert(std::make_pair("xml","text/xml"));
     mt.insert(std::make_pair("gif","image/gif"));
@@ -62,3 +64,28 @@ std::string ft_trim(const std::string &s)
 {
     return ft_rtrim(ft_ltrim(s));
 }
+
+// std::vector<std::string> _split(const std::string &str, const std::string &delim)
+// {
+// 	std::vector<std::string> tmp_split;
+
+//     tmp_split.push_back(str);
+//     size_t i = delim.length();
+//     while (i > 0)
+//     {
+//         std::stringstream ss(str);
+//         std::string item;
+//         while (std::getline(ss, item, delim))
+//         {
+//             tmp_split.push_back(item);
+//         }
+        
+//         ++i;
+//     }
+    
+// // 	std::stringstream ss(str);
+// // 	std::string item;
+// // 	while(std::getline(ss, item, delim))
+// // 		tmp_split.push_back(item);
+// // 	return tmp_split;
+// }

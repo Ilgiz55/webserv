@@ -65,7 +65,7 @@ void Session::Parse() {
 
 void Session::SetResponse(){
 	response.setProtocol(request.getProtocol());
-	// response.setStatus(" 200 OK\n");
+	response.setStatus(response.getStatus());
 	response.setContentType(request.getUri());
 	// try
 	// {
@@ -97,10 +97,10 @@ void Session::Handle(bool r, bool w) {
 	RequestHandler rh(this->GetConfigServer(), request, response);
 	rh.Handle();
 	SetResponse();
-	std::string buffer = response.getBuffer();
+	// std::string buffer = response.getBuffer();
 	try {
 		Send();
-	}
+	}   
 	catch(const std::exception& e) {
 		std::cerr << e.what() << std::endl;
 		std::cout << "error in send" << std::endl;

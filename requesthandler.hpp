@@ -3,6 +3,7 @@
 
 #include "session.hpp"
 #include "utils.hpp"
+// #include "./cgi/CGI.hpp"
 
 // class Session;
 
@@ -27,7 +28,7 @@ public:
 	RequestHandler(ConfigServer conf, Request& req, Response& res);
 	~RequestHandler() {}
 	void Get(AConfig& config);
-	void Post();
+	void Post(AConfig& config);
 	void Delete();
 
 	void ParseFileType();

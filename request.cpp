@@ -10,12 +10,16 @@ const std::string& Request::getUri() const { return uri; }
 
 const std::string& Request::getProtocol() const { return protocol; }
 
+const std::string& Request::getQueryStr() const {return get_param; }
+
 std::string Request::getHeader(const std::string& key) const {
 	std::map<std::string, std::string>::const_iterator it = headers.find(key);
 	if (it == headers.end())
 		return "";
 	return it->second;
 }
+
+const std::map<std::string, std::string>& Request::allHeader() const { return headers; }
 
 const std::string& Request::getBody() const { return body; }
 

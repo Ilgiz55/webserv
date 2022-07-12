@@ -23,11 +23,20 @@ int main(int agrc, char **argv)
     for(; it != it_end; ++it ) {
         // std::cout << "Server: " << i++ << std::endl;
         // (*it).printConfigServer();
-        serv.push_back(Server::Start(*it, selector, (*it).getPort()));
+        serv.push_back(Server::Start(*it, selector, (*it).getListen()));
     }
 
     // if (!serv)
     //     return 1;
-    selector->Run();
+    try
+    {
+        selector->Run();
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << "WTHF" << std::endl;
+        std::cerr << e.what() << '\n';
+    }
+    
     return 0;
 }

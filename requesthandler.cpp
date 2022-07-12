@@ -1,4 +1,5 @@
 #include "requesthandler.hpp"
+#include "./cgi/CGI.hpp"
 
 RequestHandler::RequestHandler(ConfigServer conf, Request& req, Response& res) : conf_serv(conf),  isfile(true), static_site(true), request(req), response(res) {}
 
@@ -8,7 +9,7 @@ void RequestHandler::Handle() {
 	if (method == "GET")
 		this->Get(conf);
 	else if (method == "POST")
-		this->Post();
+		this->Post(conf);
 	else if (method == "DELETE")
 		this->Delete();
 }
@@ -45,19 +46,36 @@ AConfig RequestHandler::GetConf() {
 }
 
 void RequestHandler::GetForFile(std::string path, AConfig conf) {
+	std::cout << "-----TEST GetForFile-----" <<std::endl;
+	std::cout << path <<std::endl;
 	if (conf.getCGIPath().empty()) { 
 		if (isThereSuchFile(path)) {
 			response.setBody(read_file(path));
 			response.setStatus(" 200 OK\n");
 		}
 		else {
-			response.setBody("FILE NOT FOUND\n");
+			response.setBody("<p  style=\"font-size: 24px; font-weight:bold\"><b>Not Found</p></b><p>The requested URL was not found on this server.</p>\n");
 			response.setStatus(" 404 Not Found\n");
 		}
 	}
 	else {
-		
-			//CGI work
+		//CGI work
+		Cgi cgi;
+		try
+		{
+			response.setBody(cgi.executeCgi(path, request,conf));
+			response.setStatus(cgi.status);
+		}
+		catch(const std::exception& e)
+		{
+			response.setBody("<center><p  style=\"font-size: 48px; font-weight:bold\">500</p>\
+					<p  style=\"font-size: 48px; font-weight:bold\">Internal Server Error</p>\
+					<p>An internal server error has occured</p>\n</center>");
+			response.setStatus(cgi.status);
+			std::cerr << e.what() << std::endl;
+		}
+		std::cout << "-----PRINT BODY-----" <<std::endl;
+		std::cout << response.getBody() << std::endl;
 	}
 }
 
@@ -130,10 +148,8 @@ void RequestHandler::Get(AConfig& conf) {
 	}
 }
 
-
-
-void RequestHandler::Post() {
-
+void RequestHandler::Post(AConfig& conf) {
+	Get(conf);
 }
 
 void RequestHandler::Delete() {
