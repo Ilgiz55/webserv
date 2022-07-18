@@ -11,8 +11,8 @@ void AConfig::setRoot(std::string root) { _root = root; }
 void AConfig::setMethods(std::vector<std::string> methods) { _methods = methods; }
 
 void AConfig::setMethods(std::string methods) { 
-	std::vector<std::string> mthds = ft_split(methods, WHITESPACE);
-	std::vector<std::string> allowed_mthds = ft_split(METHODS, WHITESPACE);
+	std::vector<std::string> mthds = ft_split(methods, " "); //WHITESPACE
+	std::vector<std::string> allowed_mthds = ft_split(METHODS, " "); //WHITESPACE
 	if (mthds.size() > allowed_mthds .size())
 		throw std::runtime_error("syntax error in allowed methods");
 	for (int i = 0; i < mthds.size(); i++)

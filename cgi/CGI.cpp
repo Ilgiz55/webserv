@@ -38,7 +38,7 @@ std::string Cgi::executeCgi(const std::string scriptName, Request &request, ACon
 	std::string	newBody;
 	status = "Status: 500\n";
 
-	std::cout << "__________EXECUTE_________" << std::endl;
+	// std::cout << "__________EXECUTE_________" << std::endl;
 	// std::cout << "scriptName=" << scriptName << std::endl;
 
 	// SAVING STDIN AND STDOUT IN ORDER TO TURN THEM BACK TO NORMAL LATER
@@ -73,12 +73,6 @@ std::string Cgi::executeCgi(const std::string scriptName, Request &request, ACon
 			std::cout << cgi_cmd[i] << std::endl;
 			i++;
 		}
-		// char **tmp = environ;
-		// while (*tmp)
-		// {
-		// 	std::cout << *tmp << std::endl;
-		// 	++tmp;
-		// }
 		
 		dup2(fdIn, STDIN_FILENO);
 		dup2(fdOut, STDOUT_FILENO);
@@ -117,6 +111,6 @@ std::string Cgi::executeCgi(const std::string scriptName, Request &request, ACon
 	close(saveStdout);
 
 	status = " 200 OK\n";
-	std::cout << "__________END_______EXECUTE_________" << std::endl;
+	// std::cout << "__________END_______EXECUTE_________" << std::endl;
 	return (newBody);
 }
