@@ -24,6 +24,16 @@ void AConfig::setMethods(std::string methods) {
 	_methods = mthds;
 }
 
+void AConfig::setRedirect(std::string redirect){
+	std::vector<std::string> tmp = ft_split(redirect, " ");
+	if (tmp.size() != 2)
+		throw std::runtime_error("syntax error in redirect");
+	int i = atoi(tmp[0].c_str());
+	if (i < 100 || i > 999)
+		throw std::runtime_error("syntax error in redirect");
+	_redirect = std::make_pair(tmp[0], tmp[2]);
+}
+
 void AConfig::setIndex(std::string index) { _index = index; }
 
 void AConfig::setAutoIndex(std::string autoindex) { 
@@ -43,11 +53,13 @@ void AConfig::setClientBodySize(const std::string BodySize) {
 		_cgi_path = atoll(BodySize.c_str()); // no checks
 }
 
-std::string AConfig::getRoot() { return _root; }
+std::string& AConfig::getRoot() { return _root; }
 
-std::vector<std::string> AConfig::getMethods() { return _methods; }
+std::vector<std::string>& AConfig::getMethods() { return _methods; }
 
-std::string AConfig::getIndex() { return _index; }
+std::pair<std::string, std::string>& AConfig::getRedirect() {return _redirect; }
+
+std::string& AConfig::getIndex() { return _index; }
 
 bool AConfig::getAutoIndex() { return _autoindex; }
 

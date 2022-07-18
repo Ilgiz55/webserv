@@ -81,4 +81,6 @@ public:
     // }
 };
 
+std::vector<ConfigServer> parser_config(std::string& fname);
+
 #endif

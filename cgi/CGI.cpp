@@ -3,7 +3,7 @@
 void Cgi::setEnv(Request &request, AConfig &config, const std::string scriptName) {
 	// long _content_length = 0;
 	setenv("CONTENT_LENGTH", std::to_string(request.getBody().length()).c_str(), 1); //  I'll think about that tomorrow.
-	setenv("CONTENT_TYPE", "text/html", 1); //  I'll think about that tomorrow.
+	setenv("CONTENT_TYPE", request.getHeader("Content-Type").c_str(), 1); //  I'll think about that tomorrow.
 	setenv("GATEWAY_INTERFACE", "CGI/1.1", 1);
 	setenv("PATH_INFO", request.getUri().c_str(), 1);
 	setenv("REQUEST_URI", request.getUri().c_str(), 1);
@@ -38,7 +38,7 @@ std::string Cgi::executeCgi(const std::string scriptName, Request &request, ACon
 	std::string	newBody;
 	status = "Status: 500\n";
 
-	// std::cout << "__________EXECUTE_________" << std::endl;
+	std::cout << "__________EXECUTE_________" << std::endl;
 	// std::cout << "scriptName=" << scriptName << std::endl;
 
 	// SAVING STDIN AND STDOUT IN ORDER TO TURN THEM BACK TO NORMAL LATER
@@ -67,12 +67,12 @@ std::string Cgi::executeCgi(const std::string scriptName, Request &request, ACon
 		cgi_cmd[1] = scriptName.c_str();
 		cgi_cmd[2] = NULL;
 
-		// int i = 0;
-		// while (cgi_cmd[i])
-		// {
-		// 	std::cout << cgi_cmd[i] << std::endl;
-		// 	i++;
-		// }
+		int i = 0;
+		while (cgi_cmd[i])
+		{
+			std::cout << cgi_cmd[i] << std::endl;
+			i++;
+		}
 		// char **tmp = environ;
 		// while (*tmp)
 		// {
@@ -84,11 +84,11 @@ std::string Cgi::executeCgi(const std::string scriptName, Request &request, ACon
 		dup2(fdOut, STDOUT_FILENO);
 		if (execve(cgi_cmd[0], (char *const *)cgi_cmd, environ) == -1)
 		{
-			// std::cerr << RED << "Execve error." << RESET << std::endl;
-			// // write(STDOUT_FILENO, "Status: 500\r\n\r\n", 15);
-			// write(STDOUT_FILENO, "<center><p  style=\"font-size: 48px; font-weight:bold\">500</p>\
-			// 		<p  style=\"font-size: 48px; font-weight:bold\">Internal Server Error</p>\
-			// 		<p>An internal server error has occured</p>\n</center>", 179);
+			std::cerr << RED << "Execve error." << RESET << std::endl;
+			// write(STDOUT_FILENO, "Status: 500\r\n\r\n", 15);
+			write(STDOUT_FILENO, "<center><p  style=\"font-size: 48px; font-weight:bold\">500</p>\
+					<p  style=\"font-size: 48px; font-weight:bold\">Internal Server Error</p>\
+					<p>An internal server error has occured</p>\n</center>", 179);
 			exit(1);
 		}
 	}

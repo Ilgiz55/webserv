@@ -4,7 +4,7 @@
 #include "fdhandler.hpp"
 #include "selector.hpp"
 #include "session.hpp"
-#include "./config/ConfigPars.hpp"
+#include "./config/ConfigServer.hpp"
 
 #include <netinet/in.h>
  #include <arpa/inet.h>
