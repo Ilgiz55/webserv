@@ -77,7 +77,9 @@ void RequestHandler::GetForFile(std::string path, AConfig conf) {
 		Cgi cgi;
 		try
 		{
-			response.setBody(cgi.executeCgi(path, request,conf));
+			std::string body = cgi.executeCgi(path, request,conf);
+			
+			response.setBody(body);
 			response.setStatus(cgi.status);
 		}
 		catch(const std::exception& e)

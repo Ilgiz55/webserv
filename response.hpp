@@ -16,6 +16,18 @@ private:
 public:
 	Response() : _contentType("Content-Type: "), _mine_types(init_mime_types()){}
 
+	Response(const Response& other) {
+		if (this != &other)
+		{
+			_protocol = other._protocol;
+			_status = other._status;
+			_contentType = other._contentType;
+			_buffer = other._buffer;
+			_headers = other._headers;
+			_body = other._body;
+			_mine_types = other._mine_types;
+		}
+	}
 	~Response(){}
 
 	void setProtocol(const std::string& protocol) { _protocol = protocol; }
@@ -63,10 +75,6 @@ public:
 		}
 		return status;
 	}
-
-private:
-	Response(const Response&);
-	Response& operator=(const Response&);
     
 };
 
