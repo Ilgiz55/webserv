@@ -20,6 +20,16 @@ class Request {
 	public:
 		Request();
 		~Request();
+		Request(Request const &other) { *this = other; }
+		Request const &operator=(Request const &other) {
+			method = other.method;
+			uri = other.method;
+			get_param = other.get_param;
+			file_type = other.file_type;
+			protocol = other.protocol;
+			headers = other.headers;
+			body = other.body;
+		}
 		const std::string& getMethod() const;
 		const std::string& getUri() const;
 		const std::string& getProtocol() const;
