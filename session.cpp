@@ -66,7 +66,7 @@ void Session::Parse() {
 void Session::SetResponse(){
 	response.setProtocol(request.getProtocol());
 	response.setStatus(response.getStatus());
-	response.setContentType(request.getUri());
+	response.setContentType(request);
 	// try
 	// {
 	// 	std::string file_name = this->GetConfigServer().getRoot() + request.getUri();

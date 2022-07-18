@@ -20,20 +20,19 @@ public:
 
 	void setProtocol(const std::string& protocol) { _protocol = protocol; }
 	void setStatus(const std::string& status) { _status = status; }
-	void setContentType(const std::string& uri) {
-		std::size_t found = uri.find_last_of('.');
-		if (found == std::string::npos)
+	void setContentType(Request& requst) {
+		std::string type = requst.getHeader("Content-Type");
+		if (!type.empty())
 		{
-			_contentType.append(_mine_types["txt"]);
+			_contentType.append(type);
+			_contentType.append("\n");
+			return ;
 		}
+		std::map<std::string, std::string>::iterator it;
+		if ((it = _mine_types.find(requst.getFileType())) != _mine_types.end())
+			_contentType.append(it->second);
 		else
-		{
-			std::string extension = uri.substr(found + 1);
-			if (_mine_types.find(extension) != _mine_types.end())
-				_contentType.append(_mine_types[extension]);
-			else
-				_contentType.append(_mine_types["bin"]);
-		}
+			_contentType.append(_mine_types["bin"]);
 		_contentType.append("\n");
 	}
 	void setBuffer(const std::string& buffer) { _buffer = buffer; }
@@ -46,6 +45,24 @@ public:
 	const std::string& getContentType() const { return _contentType; }
 	const std::string& getHeaders() const { return _headers; }
 	const std::string& getBody() const { return _body; }
+
+	std::string handlerBody(std::string& body) {
+		size_t end;
+		std::string status = "200";
+		while ((end = body.find("\r\n")) != std::string::npos)
+		{
+			std::vector<std::string> cgi_body_split= ft_split(_body.substr(0, end), " ");	
+			if (!cgi_body_split.empty() && cgi_body_split[0] == "Status:")
+			{
+				if (cgi_body_split[1] != "200")
+					return status = "500";
+			}
+			else if (!cgi_body_split.empty() && cgi_body_split[0] == "Content-Type:")
+				_contentType = body.substr(0, end);
+			body.erase(0, end + 2);
+		}
+		return status;
+	}
 
 private:
 	Response(const Response&);

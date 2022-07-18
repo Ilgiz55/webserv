@@ -106,12 +106,16 @@ std::pair<std::string, Location> pars_location(std::ifstream& ifs_config, Config
 			;
 		else if ((found = _line.find("root")) != std::string::npos)
 			loc.setRoot(pars_line(_line, "root", 0));
+		else if ((found = _line.find("upload_path")) != std::string::npos)
+			loc.setRoot(pars_line(_line, "upload_path", 0));
 		else if ((found = _line.find("return")) != std::string::npos)
-			config_server.setRedirect(pars_line(_line, "return", 1));
+			config_server.setRedirect(pars_line(_line, "return", 0));
 		else if ((found = _line.find("allowed_method")) != std::string::npos)
 			loc.setMethods(pars_line(_line, "allowed_method", 0));
 		else if ((found = _line.find("autoindex")) != std::string::npos)
 			loc.setAutoIndex(pars_line(_line, "autoindex", 0));
+		else if ((found = _line.find("upload_enable")) != std::string::npos)
+			loc.setAutoIndex(pars_line(_line, "upload_enable", 0));
 		else if ((found = _line.find("index")) != std::string::npos)
 			loc.setIndex(pars_line(_line, "index", 0));
 		else if ((found = _line.find("cgi_path")) != std::string::npos)
