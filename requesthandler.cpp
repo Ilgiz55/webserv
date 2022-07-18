@@ -1,7 +1,10 @@
 #include "requesthandler.hpp"
 #include "./cgi/CGI.hpp"
 
-RequestHandler::RequestHandler(ConfigServer config, Request& req, Response& res) : conf_serv(config),  isfile(true), static_site(true), request(req), response(res) {}
+RequestHandler::RequestHandler(ConfigServer config, Request& req, Response& res) : conf_serv(config){
+	request = req;
+	response = res;
+}
 
 void RequestHandler::Handle() {
 	AConfig conf = GetConf();
@@ -162,7 +165,10 @@ void RequestHandler::Get(AConfig& conf) {
 void RequestHandler::Post(AConfig& conf) {
 	// std::cout << "-----handeling post method-----" << std::endl;
 	// std::cout << "Body of post request:\n" << request.getBody() << std::endl << std::endl;
-	Get(conf);
+	// Get(conf);
+	if (!request.getFileType().empty())
+		GetForFile(path, conf);
+	// else if (isThereSuchDir(path))
 
 }
 

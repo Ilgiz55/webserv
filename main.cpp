@@ -28,7 +28,7 @@ int main(int argc, char **argv)
 
     std::vector<ConfigServer>::iterator it = conf.begin();
     std::vector<ConfigServer>::iterator it_end = conf.end();
-    int i = 1;
+    // int i = 1;
     for(; it != it_end; ++it ) {
         // std::cout << "Server: " << i++ << std::endl;
         // (*it).printConfigServer();
