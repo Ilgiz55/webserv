@@ -66,6 +66,9 @@
 #define MAX_PORT                65535
 #define METHODS                 "GET POST DELETE"
 
+
+# define DEFAULT_CONFIG_PATH        "./default/default.conf"
+
 // Colors
 #define RED		"\033[31m"
 #define GREEN	"\033[32m"

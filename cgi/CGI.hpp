@@ -2,7 +2,7 @@
 # define CGI_HPP
 
 # include "../webserv.hpp"
-# include "../config/ConfigPars.hpp"
+# include "../config/ConfigServer.hpp"
 # include "../request.hpp"
 
 class Cgi {
@@ -23,6 +23,6 @@ class Cgi {
 // GATEWAY_INTERFACE
 // PATH_INFO
 // PATH_TRANSLATED
-// QUERY_STRING˜
+// QUERY_STRING
 
 #endif

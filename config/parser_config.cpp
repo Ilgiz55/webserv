@@ -1,14 +1,20 @@
-#include "ConfigPars.hpp"
+#include "../webserv.hpp"
+#include "ConfigServer.hpp"
 
-ConfigPars::ConfigPars(std::string& fname) //: _listen(80,""), _server_name(""), _location("")
+std::pair<std::string, Location> pars_location(std::ifstream& ifs_config, ConfigServer& config_server, std::string & _line);
+std::string pars_line(std::string & _line, std::string str, int flag);
+void pars_server(std::ifstream& ifs_config, ConfigServer& config_server, std::string& _line);
+
+std::vector<ConfigServer> parser_config(std::string& fname) //: _listen(80,""), _server_name(""), _location("")
 {
 	std::ifstream ifs_config(fname);
 	if (!ifs_config.is_open())
 		exit_error("Error open file", 1);
-	std::string	str_stream;
-	int i = 0;
+	std::vector<ConfigServer> _configs;
 	try
 	{
+		std::string	str_stream;
+		int i = 0;
 		while (std::getline(ifs_config, str_stream))
 		{
 			str_stream.erase(remove_if(str_stream.begin(),str_stream.end(),isspace),str_stream.end());
@@ -27,15 +33,10 @@ ConfigPars::ConfigPars(std::string& fname) //: _listen(80,""), _server_name(""),
 		std::cerr << "Configuration file error: ";
 		exit_error(e.what(), 1);
 	}
+	return _configs;
 }
 
-ConfigServer ConfigPars::getConfigServer(int i) {
-	return _configs[i];
-}
-
-std::vector<ConfigServer>& ConfigPars::getConfigs() { return _configs; }
-
-void ConfigPars::pars_server(std::ifstream& ifs_config, ConfigServer& config_server, std::string& _line)
+void pars_server(std::ifstream& ifs_config, ConfigServer& config_server, std::string& _line)
 {
 	std::size_t found;
 	int flag = 0;
@@ -60,9 +61,10 @@ void ConfigPars::pars_server(std::ifstream& ifs_config, ConfigServer& config_ser
 			config_server.setCGIPath(pars_line(_line, "cgi_path", flag));
 		else if ((found = _line.find("client_body_size")) != std::string::npos)
 			config_server.setClientBodySize(pars_line(_line, "client_body_size", flag));
-		//error_page
 		else if ((found = _line.find("error_page")) != std::string::npos)
 			config_server.setErrorPage(pars_line(_line, "error_page", flag));
+		else if ((found = _line.find("return")) != std::string::npos)
+			config_server.setRedirect(pars_line(_line, "return", flag));
 		else if ((found = _line.find("location")) != std::string::npos)
 		{
 			flag = 1;
@@ -75,7 +77,8 @@ void ConfigPars::pars_server(std::ifstream& ifs_config, ConfigServer& config_ser
 	}
 }
 
-std::string ConfigPars::pars_line(std::string & _line, std::string str, int flag) {
+std::string pars_line(std::string & _line, std::string str, int flag)
+{
 	if (flag)
 		throw std::runtime_error("location must be determined last");
 	_line = ft_ltrim(_line);
@@ -86,7 +89,8 @@ std::string ConfigPars::pars_line(std::string & _line, std::string str, int flag
 	return ft_trim(ret);
 }
 
-std::pair<std::string, Location> ConfigPars::pars_location(std::ifstream& ifs_config, ConfigServer& config_server, std::string & _line) {
+std::pair<std::string, Location> pars_location(std::ifstream& ifs_config, ConfigServer& config_server, std::string & _line) 
+{
 	Location loc;
 	std::string str = pars_line(_line, "location", 0);
 	std::size_t found = str.find_last_of('{');
@@ -101,12 +105,9 @@ std::pair<std::string, Location> ConfigPars::pars_location(std::ifstream& ifs_co
 		if (_line[0] == '#' || _line == "")
 			;
 		else if ((found = _line.find("root")) != std::string::npos)
-		{
-			std::string tmp_root = pars_line(_line, "root", 0);
-			if(tmp_root[0] == '/')
-				tmp_root = config_server.getRoot() + tmp_root;
-			loc.setRoot(tmp_root);
-		}
+			loc.setRoot(pars_line(_line, "root", 0));
+		else if ((found = _line.find("return")) != std::string::npos)
+			config_server.setRedirect(pars_line(_line, "return", 1));
 		else if ((found = _line.find("allowed_method")) != std::string::npos)
 			loc.setMethods(pars_line(_line, "allowed_method", 0));
 		else if ((found = _line.find("autoindex")) != std::string::npos)

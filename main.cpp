@@ -1,24 +1,33 @@
 #include "session.hpp"
 #include "server.hpp"
-#include "./config/ConfigPars.hpp"
 
 // static int port = 8888;
 
-int main(int agrc, char **argv)
+int main(int argc, char **argv)
 {
-    // std::vector<std::pair<std::string, int> > lis;
-    // lis.push_back(std::pair<std::string, int>("127.0.0.1", 8080));
-    // lis.push_back(std::pair<std::string, int>("127.0.0.1", 8008));
-    // lis.push_back(std::pair<std::string, int>("127.0.0.1", 8888));
-
+    std::string config_file = "./default/default.conf";
+    if (argc > 2)
+    {
+        std::cout << "!!input error\nusage: ./webserv [config_file.conf]\n";
+        return 0;
+    }
+    else if (argc == 2)
+    {
+        config_file = argv[1];
+        size_t t;
+        if ((t = config_file.find(".conf")) != config_file.length() - 5)
+        {
+            std::cout << "!input error\nusage : ./webserv [config_file.conf]\n";
+            return 0;
+        }
+    }
+    
     std::vector<Server*> serv;
-    std::string config_file = "config_test.conf";
-    ConfigPars *conf = new ConfigPars(config_file);
+    std::vector<ConfigServer> conf = parser_config(config_file);
     EventSelector *selector = new EventSelector;
 
-    // std::vector<std::pair<std::string,int> >::iterator it = lis.begin();
-    std::vector<ConfigServer>::iterator it = conf->getConfigs().begin();
-    std::vector<ConfigServer>::iterator it_end = conf->getConfigs().end();
+    std::vector<ConfigServer>::iterator it = conf.begin();
+    std::vector<ConfigServer>::iterator it_end = conf.end();
     int i = 1;
     for(; it != it_end; ++it ) {
         // std::cout << "Server: " << i++ << std::endl;
