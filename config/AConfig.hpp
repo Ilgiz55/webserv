@@ -14,7 +14,7 @@ private:
 	bool 						_autoindex;
 	bool 						_isGeneral;
 	std::string 				_cgi_path;
-	size_t 						_client_body_size;
+	// size_t 						_client_body_size;
 	
 public:
     AConfig();

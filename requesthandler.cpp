@@ -177,6 +177,7 @@ void RequestHandler::Delete(AConfig& conf) {
 	
 	// std::cout << "-----handeling delete method-----" << std::endl;
 	// std::cout << "file to delete: " << path << std::endl;
+	// (void)conf;
 	if (isThereSuchFile(path)) {
 		if (remove(path.c_str()) != 0)
 			perror("Can't delete file");

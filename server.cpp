@@ -36,6 +36,7 @@ Server* Server::Start(ConfigServer conf, EventSelector *sel, std::pair<std::stri
 }
 
 void Server::Handle(bool r, bool w) {
+    // (void)w;
     if (!r)
         return;
     int sd;

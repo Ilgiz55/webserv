@@ -12,6 +12,8 @@ Response& Session::GetResponse() {return response; }
 void Session::Send() {
 	std::string buffer = response.getBuffer();
 	ssize_t sendBytes = send(GetFd(), buffer.c_str(), buffer.size(),0);
+	if (sendBytes < 0)
+		throw std::runtime_error("Error send response");
 }
 
 void Session::Receive() {
@@ -83,6 +85,7 @@ void Session::SetResponse(){
 }
 
 void Session::Handle(bool r, bool w) {
+	// (void)w;
 	if (!r)
 		return;
 	Receive();
