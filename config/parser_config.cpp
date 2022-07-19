@@ -5,7 +5,7 @@ std::pair<std::string, Location> pars_location(std::ifstream& ifs_config, Config
 std::string pars_line(std::string & _line, std::string str, int flag);
 void pars_server(std::ifstream& ifs_config, ConfigServer& config_server, std::string& _line);
 
-std::vector<ConfigServer> parser_config(std::string& fname) //: _listen(80,""), _server_name(""), _location("")
+std::vector<ConfigServer> parser_config(std::string& fname)
 {
 	std::ifstream ifs_config(fname);
 	if (!ifs_config.is_open())

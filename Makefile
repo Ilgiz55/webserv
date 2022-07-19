@@ -1,4 +1,5 @@
 NAME		=	webserv
+CGI_NAME	=	./cgi-bin/cgi_php
 
 CC			=	c++ -std=c++98
 CFLAGS		=	-Wall -Werror -Wextra
@@ -13,8 +14,11 @@ HEADER		=	fdhandler.hpp request.hpp requesthandler.hpp response.hpp selector.hpp
 SRC			=	main.cpp request.cpp requesthandler.cpp server.cpp session.cpp utils.cpp utils2.cpp \
 				./cgi/CGI.cpp ./config/AConfig.cpp ./config/parser_config.cpp
 
+CGI_SRC		= ./cgi-bin/cgi_php.cpp
+
 # OBJ			=	$(addprefix $(OBJ_DIR)/, $(SRC:.cpp=.o))
 OBJ=$(SRC:.cpp=.o)
+CGI_OBJ=$(CGI_SRC:.cpp=.o)
 
 %.o: %.cpp $(HEADERS)
 	$(CC) -c -o $@ $< 
@@ -39,16 +43,20 @@ all			:	$(NAME)
 # 				@mkdir -p $(OBJ_DIR)
 		
 
-$(NAME)		:	$(OBJ) $(HEADER)
+$(CGI_NAME)	:	$(CGI_OBJ)
+				$(CC) $(CFLAGS) $(CGI_OBJ) -o $(CGI_NAME)
+				@echo "\tCompiling cgi...\t" [ $(CGI_NAME) ] $(SUCCESS)
+
+$(NAME)		:	$(OBJ) $(HEADER) $(CGI_NAME)
 				$(CC) $(CFLAGS) $(OBJ) -o $(NAME)
 				@echo "\tCompiling...\t" [ $(NAME) ] $(SUCCESS)
 
 clean		:
-				@$(RM_DIR) $(OBJ)
+				@$(RM_DIR) $(OBJ) $(CGI_OBJ)
 				@echo "\tCleaning...\t" [ $(OBJ_DIR) ] $(OK)
 
 fclean		:	clean
-				@$(RM_FILE) $(NAME)
+				@$(RM_FILE) $(NAME) $(CGI_NAME)
 				@echo "\tDeleting...\t" [ $(NAME) ] $(OK)
 
 re			:	fclean all

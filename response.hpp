@@ -11,6 +11,7 @@ private:
 	std::string _buffer;
 	std::string _headers;
 	std::string _body;
+	std::string _return;
 	std::map<std::string, std::string> _mine_types;
 
 public:
@@ -25,6 +26,7 @@ public:
 			_buffer = other._buffer;
 			_headers = other._headers;
 			_body = other._body;
+			_return = other._return;
 			_mine_types = other._mine_types;
 		}
 	}
@@ -48,7 +50,12 @@ public:
 		_contentType.append("\n");
 	}
 	void setBuffer(const std::string& buffer) { _buffer = buffer; }
-	void setHeader(const std::string& header) { _headers.append(header);}
+	// void setHeader(const std::string& header) { _headers.append(header);}
+	void setReturn(std::string& status, std::string redirect)
+	{
+		_status = status;
+		_return = "Location:" + redirect + "\r\n";
+	}
 
 	void setBody(const std::string& body) { _body = body; }
 	const std::string& getProtocol() const { return _protocol; }
@@ -76,6 +83,13 @@ public:
 		return status;
 	}
     
+
+	void createHeader() { 
+		_headers = _protocol + _status + _contentType + "Content-Length: " + std::to_string(_body.size()) + "\n\n";
+		if (!_return.empty())
+			_headers += _return;
+	}
+
 };
 
 #endif

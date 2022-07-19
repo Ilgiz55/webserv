@@ -2,23 +2,22 @@
 
 void Cgi::setEnv(Request &request, const std::string scriptName) {
 	// long _content_length = 0;
-	setenv("CONTENT_LENGTH", std::to_string(request.getBody().length()).c_str(), 1); //  I'll think about that tomorrow.
-	setenv("CONTENT_TYPE", request.getHeader("Content-Type").c_str(), 1); //  I'll think about that tomorrow.
+	setenv("CONTENT_LENGTH", std::to_string(request.getBody().length()).c_str(), 1);
+	setenv("CONTENT_TYPE", request.getHeader("Content-Type").c_str(), 1);
 	setenv("GATEWAY_INTERFACE", "CGI/1.1", 1);
 	setenv("PATH_INFO", request.getUri().c_str(), 1);
 	setenv("REQUEST_URI", request.getUri().c_str(), 1);
 	setenv("QUERY_STRING", request.getQueryStr().c_str(), 1);
 	setenv("REQUEST_METHOD", request.getMethod().c_str(), 1);
 	setenv("REMOTE_ADDR", "127.0.0.1", 1); //  I'll think about that tomorrow.
-	setenv("SCRIPT_NAME", "/Users/sfearow/.brew/bin/php-cgi", 1); //  I'll think about that tomorrow.
+	setenv("SCRIPT_NAME", scriptName.c_str(), 1);
 	setenv("SERVER_NAME", "webserv", 1);
 	setenv("SERVER_PORT", "8001", 1); //  I'll think about that tomorrow.
-	setenv("REDIRECT_STATUS", "CGI", 1); //  I'll think about that tomorrow.
+	setenv("REDIRECT_STATUS", "CGI", 1);
 	setenv("SERVER_PROTOCOL", request.getProtocol().c_str(), 1);
 	setenv("SERVER_SOFTWARE", "WebServ/1.0", 1);
 	setenv("AUTH_TYPE", "", 1);
-	setenv("PATH_TRANSLATED", scriptName.c_str(), 1); //  I'll think about that tomorrow.
-	setenv("REMOTE_IDENT", "", 1);
+	setenv("PATH_TRANSLATED", scriptName.c_str(), 1);
 	setenv("REMOTE_USER", "", 1);
 	setenv("REDIRECT_STATUS", "200", 1);
 

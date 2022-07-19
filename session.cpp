@@ -69,18 +69,9 @@ void Session::SetResponse(){
 	response.setProtocol(request.getProtocol());
 	response.setStatus(response.getStatus());
 	response.setContentType(request);
-	// try
-	// {
-	// 	std::string file_name = this->GetConfigServer().getRoot() + request.getUri();
-	// 	response.setBody(read_file(file_name));
-	// }
-	// catch(const std::exception& e)
-	// {
-	// 	std::cerr << e.what() << std::endl;
-	// 	response.setBody("NOT FOUND\n");
-	// }
-	response.setHeader(response.getProtocol() + response.getStatus() + response.getContentType());
-	response.setHeader("Content-Length: " + std::to_string(response.getBody().size()) + "\n\n");
+	response.createHeader();
+	// response.setHeader(response.getProtocol() + response.getStatus() + response.getContentType());
+	// response.setHeader("Content-Length: " + std::to_string(response.getBody().size()) + "\n\n");
 	response.setBuffer(response.getHeaders() + response.getBody());
 }
 
