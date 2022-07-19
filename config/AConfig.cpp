@@ -13,9 +13,9 @@ void AConfig::setMethods(std::vector<std::string> methods) { _methods = methods;
 void AConfig::setMethods(std::string methods) { 
 	std::vector<std::string> mthds = ft_split(methods, " "); //WHITESPACE
 	std::vector<std::string> allowed_mthds = ft_split(METHODS, " "); //WHITESPACE
-	if (mthds.size() > allowed_mthds .size())
+	if (mthds.size() > allowed_mthds.size())
 		throw std::runtime_error("syntax error in allowed methods");
-	for (int i = 0; i < mthds.size(); i++)
+	for (size_t i = 0; i < mthds.size(); i++)
 	{
 		std::vector<std::string>::iterator it = std::find(allowed_mthds.begin(), allowed_mthds.end(), mthds[i]);
 		if (it == allowed_mthds.end())
@@ -31,7 +31,8 @@ void AConfig::setRedirect(std::string redirect){
 	int i = atoi(tmp[0].c_str());
 	if (i < 100 || i > 999)
 		throw std::runtime_error("syntax error in redirect");
-	_redirect = std::make_pair(tmp[0], tmp[2]);
+	_redirect.first = tmp[0];
+	_redirect.second = tmp[1];
 }
 
 void AConfig::setIndex(std::string index) { _index = index; }

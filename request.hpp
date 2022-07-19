@@ -29,6 +29,7 @@ class Request {
 			protocol = other.protocol;
 			headers = other.headers;
 			body = other.body;
+			return *this;
 		}
 		const std::string& getMethod() const;
 		const std::string& getUri() const;

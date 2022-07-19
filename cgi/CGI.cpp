@@ -1,6 +1,6 @@
 #include "CGI.hpp"
 
-void Cgi::setEnv(Request &request, AConfig &config, const std::string scriptName) {
+void Cgi::setEnv(Request &request, const std::string scriptName) {
 	// long _content_length = 0;
 	setenv("CONTENT_LENGTH", std::to_string(request.getBody().length()).c_str(), 1); //  I'll think about that tomorrow.
 	setenv("CONTENT_TYPE", request.getHeader("Content-Type").c_str(), 1); //  I'll think about that tomorrow.
@@ -27,7 +27,7 @@ void Cgi::setEnv(Request &request, AConfig &config, const std::string scriptName
 		it_end = request.allHeader().end(); it != it_end; it++)
 	{
 		std::string tmp = it->first;
-		for (int i = 0; i < tmp.size(); i++)
+		for (size_t i = 0; i < tmp.size(); i++)
 			tmp[i] = toupper(tmp[i]);
 		setenv(("HTTP_" + tmp).c_str(), it->second.c_str(), 1);
 	}
@@ -61,7 +61,7 @@ std::string Cgi::executeCgi(const std::string scriptName, Request &request, ACon
 	else if (!pid)
 	{
 		extern char **environ;
-		setEnv(request, config, scriptName); //Cgi::_setEnv(Request &request, ConfigServer &config)
+		setEnv(request, scriptName); //Cgi::_setEnv(Request &request, ConfigServer &config)
 		char const	*cgi_cmd[3];
 		cgi_cmd[0] = config.getCGIPath().c_str();
 		cgi_cmd[1] = scriptName.c_str();
