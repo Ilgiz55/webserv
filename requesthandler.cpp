@@ -38,6 +38,11 @@ AConfig RequestHandler::GetConf() {
 	size_t len = 0;
 	for (it = loc.begin(); it != loc.end(); ++it) {
 		if (uri.find(it->first) != std::string::npos) {
+			if (!it->second.getRedirect().first.empty())
+			{
+				response.setReturn(it->second.getRedirect().first, it->second.getRedirect().second);
+				break;
+			}
 			if (it->first.length() > len) {
 				path = it->second.getRoot() + uri;
 				location = it->second;
@@ -73,7 +78,6 @@ void RequestHandler::GetForFile(std::string path, AConfig conf) {
 		try
 		{
 			std::string body = cgi.executeCgi(path, request,conf);
-			
 			response.setBody(body);
 			response.setStatus(cgi.status);
 		}
@@ -162,7 +166,6 @@ void RequestHandler::Get(AConfig& conf) {
 void RequestHandler::Post(AConfig& conf) {
 	if (!request.getFileType().empty())
 		GetForFile(path, conf);
-
 }
 
 void RequestHandler::Delete() {

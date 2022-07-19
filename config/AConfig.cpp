@@ -28,11 +28,10 @@ void AConfig::setRedirect(std::string redirect){
 	std::vector<std::string> tmp = ft_split(redirect, " ");
 	if (tmp.size() != 2)
 		throw std::runtime_error("syntax error in redirect");
+	_redirect = std::make_pair(tmp[0], tmp[1]);
 	int i = atoi(tmp[0].c_str());
 	if (i < 100 || i > 999)
 		throw std::runtime_error("syntax error in redirect");
-	_redirect.first = tmp[0];
-	_redirect.second = tmp[1];
 }
 
 void AConfig::setIndex(std::string index) { _index = index; }
@@ -58,7 +57,7 @@ std::string& AConfig::getRoot() { return _root; }
 
 std::vector<std::string>& AConfig::getMethods() { return _methods; }
 
-std::pair<std::string, std::string>& AConfig::getRedirect() {return _redirect; }
+std::pair<std::string, std::string>& AConfig::getRedirect() { return _redirect; }
 
 std::string& AConfig::getIndex() { return _index; }
 
@@ -66,4 +65,4 @@ bool AConfig::getAutoIndex() { return _autoindex; }
 
 bool AConfig::getIsGeneral() { return _isGeneral; }
 
-std::string & AConfig::getCGIPath() { return _cgi_path; }
+std::string& AConfig::getCGIPath() { return _cgi_path; }

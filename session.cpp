@@ -71,8 +71,7 @@ void Session::SetResponse(){
 	response.setProtocol(request.getProtocol());
 	response.setStatus(response.getStatus());
 	response.setContentType(request);
-	response.setHeader(response.getProtocol() + response.getStatus() + response.getContentType());
-	response.setHeader("Content-Length: " + std::to_string(response.getBody().size()) + "\n\n");
+	response.createHeader();
 	response.setBuffer(response.getHeaders() + response.getBody());
 }
 

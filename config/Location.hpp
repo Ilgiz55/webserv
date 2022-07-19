@@ -25,20 +25,21 @@ public:
 	const bool& getUploadEnable() const { return _upload_enable; }
 	const std::string& getUploadPath() const {return _upload_path; }
 
-	// void printLocation()
-	// {
-	// 	std::cout << "	root " << this->getRoot() << std::endl;
-	// 	std::vector<std::string>::iterator it = this->getMethods().begin();
-    //     std::vector<std::string>::iterator it_end = this->getMethods().end();
-    //     std::cout << "	method:";
-    //     while (it != it_end)
-    //     {
-    //         std::cout << " " << *it ;
-    //         it++;
-    //     }
-	// 	std::cout << std::endl << "	index " << this->getIndex() << std::endl;
-	// 	std::cout << "	cgi_path " << this->getCGIPath() << std::endl;
-	// }
+	void printLocation()
+	{
+		std::cout << "	root " << this->getRoot() << std::endl;
+		std::vector<std::string>::iterator it = this->getMethods().begin();
+        std::vector<std::string>::iterator it_end = this->getMethods().end();
+        std::cout << "	method:";
+        while (it != it_end)
+        {
+            std::cout << " " << *it ;
+            it++;
+        }
+		std::cout << std::endl << "	index " << this->getIndex() << std::endl;
+		std::cout << "	cgi_path " << this->getCGIPath() << std::endl;
+		std::cout << "	redirect " << this->getRedirect().first << " " << this->getRedirect().second << std::endl;
+	}
 };
 
 #endif //WEBSERV_LOCATION_HPP
