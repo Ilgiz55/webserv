@@ -1,7 +1,6 @@
 #include "session.hpp"
 #include "server.hpp"
 
-// static int port = 8888;
 
 int main(int argc, char **argv)
 {
@@ -28,15 +27,12 @@ int main(int argc, char **argv)
 
     std::vector<ConfigServer>::iterator it = conf.begin();
     std::vector<ConfigServer>::iterator it_end = conf.end();
-    // int i = 1;
+
     for(; it != it_end; ++it ) {
-        // std::cout << "Server: " << i++ << std::endl;
-        // (*it).printConfigServer();
+
         serv.push_back(Server::Start(*it, selector, (*it).getListen()));
     }
 
-    // if (!serv)
-    //     return 1;
     try
     {
         selector->Run();

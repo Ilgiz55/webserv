@@ -85,7 +85,7 @@ void Session::SetResponse(){
 }
 
 void Session::Handle(bool r, bool w) {
-	// (void)w;
+	(void)w;
 	if (!r)
 		return;
 	Receive();
@@ -100,7 +100,6 @@ void Session::Handle(bool r, bool w) {
 	RequestHandler rh(this->GetConfigServer(), request, response);
 	rh.Handle();
 	SetResponse();
-	// std::string buffer = response.getBuffer();
 	try {
 		Send();
 	}   

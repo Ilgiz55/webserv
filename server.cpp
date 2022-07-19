@@ -17,17 +17,14 @@ Server* Server::Start(ConfigServer conf, EventSelector *sel, std::pair<std::stri
     opt = 1;
     setsockopt(ls, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
     addr.sin_family = AF_INET;
-    // addr.sin_addr.s_addr = htonl(INADDR_ANY);
     res = inet_aton(ip_port.first.c_str(), &addr.sin_addr);
     if (res == 0)
         return 0;
     addr.sin_port = htons(ip_port.second);
     res = bind(ls, (struct sockaddr *) &addr, sizeof(addr));
     if (res == -1) {
-        // std::cout << "listen socket error" << std::endl;
         return 0;
     }
-    // std::cout << "I'm listening fd: " << ls << std::endl;
     res = listen(ls, 15);
     if (res == -1)
         return 0;
@@ -36,7 +33,7 @@ Server* Server::Start(ConfigServer conf, EventSelector *sel, std::pair<std::stri
 }
 
 void Server::Handle(bool r, bool w) {
-    // (void)w;
+    (void)w;
     if (!r)
         return;
     int sd;
@@ -55,7 +52,6 @@ void Server::RemoveSession(Session *s) {
     std::list<Session*>::iterator tomove = std::find(sessions.begin(), sessions.end(), s);
     if (tomove != sessions.end()) {
         sessions.erase(tomove);
-        // std::cout << "connection closed... fd: " << (*tomove)->GetFd() << std::endl;
         delete *tomove;
     }
 }

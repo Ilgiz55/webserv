@@ -2,7 +2,6 @@
 #include "./cgi/CGI.hpp"
 
 RequestHandler::RequestHandler(ConfigServer config, Request& req, Response& res) : conf_serv(config), request(req), response(res) {
-
 }
 
 void RequestHandler::Handle() {
@@ -24,7 +23,7 @@ void RequestHandler::Handle() {
 	else if (method == "POST")
 		this->Post(conf);
 	else if (method == "DELETE")
-		this->Delete(conf);
+		this->Delete();
 }
 
 AConfig RequestHandler::GetConf() {
@@ -59,8 +58,6 @@ AConfig RequestHandler::GetConf() {
 }
 
 void RequestHandler::GetForFile(std::string path, AConfig conf) {
-	// std::cout << "-----TEST GetForFile-----" <<std::endl;
-	// std::cout << path <<std::endl;
 	if (conf.getCGIPath().empty()) { 
 		if (isThereSuchFile(path)) {
 			response.setBody(read_file(path));
@@ -72,7 +69,6 @@ void RequestHandler::GetForFile(std::string path, AConfig conf) {
 		}
 	}
 	else {
-		//CGI work
 		Cgi cgi;
 		try
 		{
@@ -164,20 +160,12 @@ void RequestHandler::Get(AConfig& conf) {
 }
 
 void RequestHandler::Post(AConfig& conf) {
-	// std::cout << "-----handeling post method-----" << std::endl;
-	// std::cout << "Body of post request:\n" << request.getBody() << std::endl << std::endl;
-	// Get(conf);
 	if (!request.getFileType().empty())
 		GetForFile(path, conf);
-	// else if (isThereSuchDir(path))
 
 }
 
-void RequestHandler::Delete(AConfig& conf) {
-	
-	// std::cout << "-----handeling delete method-----" << std::endl;
-	// std::cout << "file to delete: " << path << std::endl;
-	// (void)conf;
+void RequestHandler::Delete() {
 	if (isThereSuchFile(path)) {
 		if (remove(path.c_str()) != 0)
 			perror("Can't delete file");

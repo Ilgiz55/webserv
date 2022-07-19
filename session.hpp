@@ -38,8 +38,6 @@ public:
 	void Parse();
 	void SetResponse();
 	virtual void Handle(bool r, bool w);
-	// virtual bool WantRead() const {return false;}
-    // virtual bool WantWrite() const {return true;}
 
 	Request& GetRequest();
 	Response& GetResponse();
