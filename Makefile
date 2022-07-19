@@ -1,7 +1,7 @@
 NAME		=	webserv
 
 CC			=	c++ -std=c++98
-# CFLAGS		=	-Wall -Werror -Wextra
+CFLAGS		=	-Wall -Werror -Wextra
 
 # HEADER_DIR	=	./include
 # SRC_DIR		=	./src
@@ -17,7 +17,7 @@ SRC			=	main.cpp request.cpp requesthandler.cpp server.cpp session.cpp utils.cpp
 OBJ=$(SRC:.cpp=.o)
 
 %.o: %.cpp $(HEADERS)
-	$(CC) -c -o $@ $< //$(CFLAGS)
+	$(CC) -c -o $@ $< 
 
 RM_DIR		=	rm -rf
 RM_FILE		=	rm -f
