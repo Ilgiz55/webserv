@@ -10,4 +10,5 @@ mime.types
 a.out
 serv
 draft
+*.o
 # default
