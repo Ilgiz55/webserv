@@ -10,8 +10,8 @@
 class RequestHandler {
 	// Session *session;
 	ConfigServer conf_serv;
-	Response response;
-	Request request;
+	Response& response;
+	Request& request;
 	Location location;
 	std::string path;
 	// AConfig conf;

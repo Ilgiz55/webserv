@@ -1,9 +1,8 @@
 #include "requesthandler.hpp"
 #include "./cgi/CGI.hpp"
 
-RequestHandler::RequestHandler(ConfigServer config, Request& req, Response& res) : conf_serv(config){
-	request = req;
-	response = res;
+RequestHandler::RequestHandler(ConfigServer config, Request& req, Response& res) : conf_serv(config), request(req), response(res) {
+
 }
 
 void RequestHandler::Handle() {
@@ -175,6 +174,7 @@ void RequestHandler::Post(AConfig& conf) {
 }
 
 void RequestHandler::Delete(AConfig& conf) {
+	
 	// std::cout << "-----handeling delete method-----" << std::endl;
 	// std::cout << "file to delete: " << path << std::endl;
 	// (void)conf;
