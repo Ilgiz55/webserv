@@ -30,7 +30,7 @@ std::vector<ConfigServer> parser_config(std::string& fname) //: _listen(80,""), 
 	}
 	catch(const std::exception& e)
 	{
-		std::cerr << "Configuration file error: ";
+		std::cerr << "Configuration file error: ***";
 		exit_error(e.what(), 1);
 	}
 	return _configs;
